@@ -21,7 +21,7 @@
         android:theme="@style/Theme.NewApp"
         tools:targetApi="31">
         <activity
-            android:name=".secondActivity"
+            android:name=".SecondActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
@@ -32,7 +32,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".thirdActivity"/>
+        <activity android:name=".ThirdActivity"/>
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />

@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="#4B4453"
-    tools:context=".secondActivity">
+    tools:context=".SecondActivity">
 
     <TextView
         android:layout_width="wrap_content"
@@ -20,7 +20,7 @@
         android:textSize="30sp" />
 
     <Button
-        android:id="@+id/button_gallery"
+        android:id="@+id/buttonGallery"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -30,7 +30,7 @@
         android:textStyle="bold" />
 
     <Button
-        android:id="@+id/button_photo"
+        android:id="@+id/buttonPhoto"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
