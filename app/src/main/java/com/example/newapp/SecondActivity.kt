@@ -3,6 +3,7 @@ package com.example.newapp
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.provider.MediaStore
 import androidx.activity.result.contract.ActivityResultContracts
@@ -81,11 +82,17 @@ class SecondActivity : AppCompatActivity() {
 
     private fun handleCameraResult(data: Intent?) {
         if (data != null && data.extras != null && data.extras!!.containsKey("data")) {
-            val photo: ByteArray = data.extras!!.get("data") as ByteArray
+            val imageBitmap = data.extras!!.get("data") as Bitmap
+            val stream = ByteArrayOutputStream()
+            imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+            val byteArray = stream.toByteArray()
+
             val intent = Intent(this, ThirdActivity::class.java)
             intent.putExtra("imageSource", "camera")
-            intent.putExtra("imageByteArray", photo)
+            intent.putExtra("imageByteArray", byteArray)
             startActivity(intent)
         }
     }
+
+
 }
