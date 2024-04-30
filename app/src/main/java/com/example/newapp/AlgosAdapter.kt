@@ -1,0 +1,29 @@
+package com.example.newapp
+
+import androidx.recyclerview.widget.RecyclerView
+import android.view.View
+import android.content.Context
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import android.widget.TextView
+import android.widget.ImageView
+
+class AlgosAdapter(var items: List<Item>, var context: Context) : RecyclerView.Adapter<AlgosAdapter.MyViewHolder>() {
+    class MyViewHolder(view: View): RecyclerView.ViewHolder(view){
+        val title: TextView = view.findViewById(R.id.algo_list_title)
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.algo_in_list, parent, false)
+        return MyViewHolder(view)
+    }
+
+    override fun getItemCount(): Int {
+        return items.count()
+    }
+
+    override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
+        holder.title.text = items[position].title
+    }
+
+}
