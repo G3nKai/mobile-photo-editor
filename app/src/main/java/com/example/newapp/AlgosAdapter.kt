@@ -4,13 +4,14 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import android.widget.ImageView
 
-class AlgosAdapter(var items: List<Item>, var context: Context) : RecyclerView.Adapter<AlgosAdapter.MyViewHolder>() {
+class AlgosAdapter(var items: List<Item>, var context: Context, private val imageUri: Uri?) : RecyclerView.Adapter<AlgosAdapter.MyViewHolder>() {
     class MyViewHolder(view: View): RecyclerView.ViewHolder(view){
         val title: TextView = view.findViewById(R.id.algo_list_title)
     }
@@ -28,16 +29,18 @@ class AlgosAdapter(var items: List<Item>, var context: Context) : RecyclerView.A
         val item = items[position]
         holder.title.text = item.title
 
-        holder.itemView.setOnClickListener(null)
-
-        holder.itemView.findViewById<Button>(R.id.algo_list_button).setOnClickListener {
+        holder.itemView.setOnClickListener {
             val activityToOpen = when (position) {
                 0 -> RotateActivity::class.java
+                //остальное
                 else -> null
             }
 
+
             activityToOpen?.let {
                 val intent = Intent(context, it)
+
+                intent.putExtra("imageUri", imageUri)
                 context.startActivity(intent)
             }
         }

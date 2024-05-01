@@ -43,8 +43,11 @@ class ThirdActivity: AppCompatActivity() {
         items.add(Item(8, "Аффинные преобразования" ))
         items.add(Item(9, "3D кубик" ))
 
+        val imageUri: Uri? = intent.getParcelableExtra("imageUri")
+        binding.imageView3.setImageURI(imageUri)
+
         binding.algoList.layoutManager = LinearLayoutManager(this)
-        binding.algoList.adapter = AlgosAdapter(items, this)
+        binding.algoList.adapter = AlgosAdapter(items, this, imageUri)
 
     }
 }
