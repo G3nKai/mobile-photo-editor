@@ -33,6 +33,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".ThirdActivity"/>
+        <activity android:name=".RotateActivity"/>
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />

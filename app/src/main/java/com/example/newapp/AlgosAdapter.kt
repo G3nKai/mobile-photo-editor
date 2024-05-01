@@ -3,8 +3,10 @@ package com.example.newapp
 import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
 import android.widget.ImageView
 
@@ -23,7 +25,21 @@ class AlgosAdapter(var items: List<Item>, var context: Context) : RecyclerView.A
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.title.text = items[position].title
-    }
+        val item = items[position]
+        holder.title.text = item.title
 
+        holder.itemView.setOnClickListener(null)
+
+        holder.itemView.findViewById<Button>(R.id.algo_list_button).setOnClickListener {
+            val activityToOpen = when (position) {
+                0 -> RotateActivity::class.java
+                else -> null
+            }
+
+            activityToOpen?.let {
+                val intent = Intent(context, it)
+                context.startActivity(intent)
+            }
+        }
+    }
 }

@@ -93,6 +93,4 @@ class SecondActivity : AppCompatActivity() {
             startActivity(intent)
         }
     }
-
-
 }
