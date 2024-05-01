@@ -11,7 +11,7 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.ImageView
 
-class AlgosAdapter(var items: List<Item>, var context: Context, private val imageUri: Uri?) : RecyclerView.Adapter<AlgosAdapter.MyViewHolder>() {
+class AlgosAdapter(var items: List<Item>, var context: Context, private val byteOfArray: ByteArray?) : RecyclerView.Adapter<AlgosAdapter.MyViewHolder>() {
     class MyViewHolder(view: View): RecyclerView.ViewHolder(view){
         val title: TextView = view.findViewById(R.id.algo_list_title)
     }
@@ -29,7 +29,7 @@ class AlgosAdapter(var items: List<Item>, var context: Context, private val imag
         val item = items[position]
         holder.title.text = item.title
 
-        holder.itemView.setOnClickListener {
+        holder.itemView.findViewById<Button>(R.id.algo_list_button).setOnClickListener {
             val activityToOpen = when (position) {
                 0 -> RotateActivity::class.java
                 //остальное
@@ -40,7 +40,7 @@ class AlgosAdapter(var items: List<Item>, var context: Context, private val imag
             activityToOpen?.let {
                 val intent = Intent(context, it)
 
-                intent.putExtra("imageUri", imageUri)
+                intent.putExtra("imageByteArray", byteOfArray)
                 context.startActivity(intent)
             }
         }

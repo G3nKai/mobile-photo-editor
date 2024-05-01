@@ -1,5 +1,6 @@
 package com.example.newapp
 
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -13,7 +14,9 @@ class RotateActivity : AppCompatActivity() {
         binding = ActivityRotateBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val imageUri: Uri? = intent.getParcelableExtra("imageUri")
-        binding.imageView2.setImageURI(imageUri)
+        val byteArray = intent.getByteArrayExtra("imageByteArray")
+        val bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray!!.size)
+
+        binding.imageView2.setImageBitmap(bitmap)
     }
 }

@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import androidx.activity.result.contract.ActivityResultContracts
@@ -71,15 +72,30 @@ class SecondActivity : AppCompatActivity() {
 
     private fun handleGalleryResult(data: Intent?) {
         if (data != null && data.data != null) {
-            val imageUri = data.data
+            val imageUri = data.data!!
+            val byteArray = getImageByteArray(imageUri)
             binding.imageViewer.setImageURI(imageUri)
+
             val intent = Intent(this, ThirdActivity::class.java)
             intent.putExtra("imageSource", "gallery")
-            intent.putExtra("imageUri", imageUri)
+            intent.putExtra("imageByteArray", byteArray)
             startActivity(intent)
         }
     }
 
+    private fun getImageByteArray(imageUri: Uri): ByteArray {
+        val inputStream = contentResolver.openInputStream(imageUri)
+        val bytes = ByteArrayOutputStream()
+        inputStream?.use { input ->
+            val buffer = ByteArray(1024)
+            var length: Int
+            while (input.read(buffer).also { length = it } != -1) {
+                bytes.write(buffer, 0, length)
+            }
+        }
+        return bytes.toByteArray()
+    }
+    
     private fun handleCameraResult(data: Intent?) {
         if (data != null && data.extras != null && data.extras!!.containsKey("data")) {
             val imageBitmap = data.extras!!.get("data") as Bitmap

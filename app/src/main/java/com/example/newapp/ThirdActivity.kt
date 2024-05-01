@@ -20,8 +20,10 @@ class ThirdActivity: AppCompatActivity() {
 
         val imageSource = intent.getStringExtra("imageSource")
         if (imageSource == "gallery") {
-            val imageUri: Uri? = intent.getParcelableExtra("imageUri")
-            binding.imageView3.setImageURI(imageUri)
+            val byteArray = intent.getByteArrayExtra("imageByteArray")
+            val bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray!!.size)
+
+            binding.imageView3.setImageBitmap(bitmap)
         }
         else if (imageSource == "camera") {
             val byteArray = intent.getByteArrayExtra("imageByteArray")
@@ -43,11 +45,10 @@ class ThirdActivity: AppCompatActivity() {
         items.add(Item(8, "Аффинные преобразования" ))
         items.add(Item(9, "3D кубик" ))
 
-        val imageUri: Uri? = intent.getParcelableExtra("imageUri")
-        binding.imageView3.setImageURI(imageUri)
+        val byteArray = intent.getByteArrayExtra("imageByteArray")
 
         binding.algoList.layoutManager = LinearLayoutManager(this)
-        binding.algoList.adapter = AlgosAdapter(items, this, imageUri)
+        binding.algoList.adapter = AlgosAdapter(items, this, byteArray)
 
     }
 }
