@@ -32,7 +32,14 @@ class AlgosAdapter(var items: List<Item>, var context: Context, private val byte
         holder.itemView.findViewById<Button>(R.id.algo_list_button).setOnClickListener {
             val activityToOpen = when (position) {
                 0 -> RotateActivity::class.java
-                //остальное
+                1 -> FiltersActivity::class.java
+                2 -> ScalingActivity::class.java
+                3 -> RecognitionActivity::class.java
+                4 -> VectorActivity::class.java
+                5 -> RetouchingActivity::class.java
+                6 -> MaskingActivity::class.java
+                7 -> AthensActivity::class.java
+                8 -> CubeActivity::class.java
                 else -> null
             }
 

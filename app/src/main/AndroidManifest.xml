@@ -34,6 +34,16 @@
         </activity>
         <activity android:name=".ThirdActivity"/>
         <activity android:name=".RotateActivity"/>
+        <activity android:name=".ScalingActivity"/>
+        <activity android:name=".FiltersActivity"/>
+        <activity android:name=".RecognitionActivity"/>
+        <activity android:name=".VectorActivity"/>
+        <activity android:name=".RetouchingActivity"/>
+        <activity android:name=".MaskingActivity"/>
+        <activity android:name=".AthensActivity"/>
+        <activity android:name=".CubeActivity"/>
+
+
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
