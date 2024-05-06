@@ -11,10 +11,11 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.ImageView
 
-class AlgosAdapter(var items: List<Item>, var context: Context, private val byteOfArray: ByteArray?) : RecyclerView.Adapter<AlgosAdapter.MyViewHolder>() {
+class AlgosAdapter(var items: List<Item>, var context: Context, private val imageUri: Uri?) : RecyclerView.Adapter<AlgosAdapter.MyViewHolder>() {
     class MyViewHolder(view: View): RecyclerView.ViewHolder(view){
         val title: TextView = view.findViewById(R.id.algo_list_title)
     }
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.algo_in_list, parent, false)
@@ -47,7 +48,7 @@ class AlgosAdapter(var items: List<Item>, var context: Context, private val byte
             activityToOpen?.let {
                 val intent = Intent(context, it)
 
-                intent.putExtra("imageByteArray", byteOfArray)
+                intent.putExtra("imageUri", imageUri.toString())
                 context.startActivity(intent)
             }
         }

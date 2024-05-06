@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -13,6 +14,8 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.newapp.databinding.ActivitySecondBinding
 import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.FileOutputStream
 
 class SecondActivity : AppCompatActivity() {
     companion object {
@@ -73,40 +76,32 @@ class SecondActivity : AppCompatActivity() {
     private fun handleGalleryResult(data: Intent?) {
         if (data != null && data.data != null) {
             val imageUri = data.data!!
-            val byteArray = getImageByteArray(imageUri)
-            binding.imageViewer.setImageURI(imageUri)
 
             val intent = Intent(this, ThirdActivity::class.java)
             intent.putExtra("imageSource", "gallery")
-            intent.putExtra("imageByteArray", byteArray)
+            intent.putExtra("imageUri", imageUri.toString())
             startActivity(intent)
         }
     }
 
-    private fun getImageByteArray(imageUri: Uri): ByteArray {
-        val inputStream = contentResolver.openInputStream(imageUri)
-        val bytes = ByteArrayOutputStream()
-        inputStream?.use { input ->
-            val buffer = ByteArray(1024)
-            var length: Int
-            while (input.read(buffer).also { length = it } != -1) {
-                bytes.write(buffer, 0, length)
-            }
-        }
-        return bytes.toByteArray()
-    }
-    
     private fun handleCameraResult(data: Intent?) {
         if (data != null && data.extras != null && data.extras!!.containsKey("data")) {
             val imageBitmap = data.extras!!.get("data") as Bitmap
-            val stream = ByteArrayOutputStream()
-            imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
-            val byteArray = stream.toByteArray()
+            val imageUri = saveImageToFile(imageBitmap)
 
             val intent = Intent(this, ThirdActivity::class.java)
             intent.putExtra("imageSource", "camera")
-            intent.putExtra("imageByteArray", byteArray)
+            intent.putExtra("imageUri", imageUri.toString())
             startActivity(intent)
         }
     }
+    private fun saveImageToFile(bitmap: Bitmap): Uri {
+        val imagesDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        val imageFile = File.createTempFile("temp_image", ".jpg", imagesDir)
+        val outputStream = FileOutputStream(imageFile)
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+        outputStream.close()
+        return Uri.fromFile(imageFile)
+    }
+
 }
