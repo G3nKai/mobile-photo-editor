@@ -12,14 +12,14 @@
         android:id="@+id/textViewFilter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="260dp"
         android:fontFamily="@font/inter_bold"
         android:text="Применить"
         android:textColor="#fafafa"
         android:textSize="13sp"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/imageViewFilter"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="70dp"
-        android:layout_marginLeft="270dp" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/imageViewFilter"
@@ -82,7 +82,7 @@
                 android:text="Шум" />
 
             <Button
-                android:id="@+id/buttonСontrast"
+                android:id="@+id/buttonContrast"
                 android:layout_margin="5dp"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
