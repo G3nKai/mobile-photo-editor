@@ -65,7 +65,7 @@ class RotateActivity : AppCompatActivity() {
 
         seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                txtDeg.setText(progress.toString())
+                txtDeg.setText("${progress}deg")
                 Degree = progress
             }
 
