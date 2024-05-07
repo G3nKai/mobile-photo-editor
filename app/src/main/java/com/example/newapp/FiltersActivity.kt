@@ -1,5 +1,6 @@
 package com.example.newapp
 
+import android.content.Intent
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
@@ -8,6 +9,10 @@ import com.example.newapp.databinding.ActivityFiltersBinding
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
+import android.media.MediaScannerConnection
+import android.os.Environment
+import java.io.File
+import java.io.FileOutputStream
 import kotlin.math.atan2
 import kotlin.math.min
 import kotlin.math.sin
@@ -53,6 +58,21 @@ class FiltersActivity: AppCompatActivity() {
         binding.buttonsContrast.setOnClickListener {
             applyContrastFilter()
         }
+
+        binding.textViewOrigin.setOnClickListener {
+            binding.imageViewFilter.setImageBitmap(originalBitmap)
+            currentBitmap = originalBitmap
+        }
+
+        binding.textViewSave.setOnClickListener {
+            val scaledUri = dispatchToGallery(currentBitmap)
+
+            val intent = Intent(this, ThirdActivity::class.java)
+            intent.putExtra("imageSource", "gallery")
+            intent.putExtra("imageUri", scaledUri.toString())
+            startActivity(intent)
+        }
+
     }
 
     private fun applyNegativeFilter() {
