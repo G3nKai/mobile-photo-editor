@@ -43,12 +43,11 @@ class RotateActivity : AppCompatActivity() {
         binding.imageView2.setImageURI(imageUri)
         originalBitmap = BitmapFactory.decodeStream(contentResolver.openInputStream(imageUri))
         binding.imageView2.setImageBitmap(originalBitmap)
-        val button = binding.butt
+        val rotate_button = binding.butt
         var modifiedBitmap: Bitmap? = null
 
-        binding.imageView2.post {
 
-            button.setOnClickListener {
+            rotate_button.setOnClickListener {
 
                 val drawable = binding.imageView2.drawable
 
@@ -59,6 +58,5 @@ class RotateActivity : AppCompatActivity() {
 
                 binding.imageView2.setImageBitmap(modifiedBitmap)
             }
-        }
     }
 }
