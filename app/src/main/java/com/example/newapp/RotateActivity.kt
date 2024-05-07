@@ -1,5 +1,6 @@
 package com.example.newapp
 
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
@@ -9,7 +10,11 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.newapp.databinding.ActivityRotateBinding
 import android.graphics.Color
+import android.media.MediaScannerConnection
+import android.os.Environment
 import android.widget.SeekBar
+import java.io.File
+import java.io.FileOutputStream
 
 class RotateActivity : AppCompatActivity() {
     private lateinit var binding: ActivityRotateBinding
@@ -47,8 +52,6 @@ class RotateActivity : AppCompatActivity() {
 
         return rotatedBitmap
     }
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityRotateBinding.inflate(layoutInflater)
@@ -93,5 +96,26 @@ class RotateActivity : AppCompatActivity() {
             binding.imageView2.setImageBitmap(modifiedBitmap)
         }
 
+        binding.button4.setOnClickListener {
+            val rotatedUri = modifiedBitmap?.let { dispatchToGallery(it) } ?: dispatchToGallery(originalBitmap)
+
+            val intent = Intent(this, ThirdActivity::class.java)
+            intent.putExtra("imageSource", "gallery")
+            intent.putExtra("imageUri", rotatedUri.toString())
+            startActivity(intent)
+        }
+    }
+
+    private fun dispatchToGallery(bitmap: Bitmap): Uri {
+        val imagesDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        val imageFile = File(imagesDir, "scaled_image.png")
+
+        val outputStream = FileOutputStream(imageFile)
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+        outputStream.close()
+
+        MediaScannerConnection.scanFile(this, arrayOf(imageFile.absolutePath), null, null)
+
+        return Uri.fromFile(imageFile)
     }
 }
