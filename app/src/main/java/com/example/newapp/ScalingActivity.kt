@@ -36,29 +36,34 @@ class ScalingActivity: AppCompatActivity() {
             if (scaleFactorText.isNotEmpty()) {
                 val scaleFactor = scaleFactorText.toFloat()
 
-                if (scaleFactor > 1) {//билинейка
-                    val scaledUri = scaleAndSaveBitmap(originalBitmap, scaleFactor)
+                if (scaleFactor > 1) {
+                    val scaledBitmap = bilinear(originalBitmap, scaleFactor)
+                    val scaledUri = dispatchToGallery(scaledBitmap)
 
                     val intent = Intent(this, ThirdActivity::class.java)
                     intent.putExtra("imageSource", "gallery")
                     intent.putExtra("imageUri", scaledUri.toString())
                     startActivity(intent)
                 }
-                else
-                    Toast.makeText(this, "Масштаб должен быть положительным", Toast.LENGTH_SHORT).show()
+                else if (scaleFactor <= 0) {
+                    Toast.makeText(this, "Масштаб должен быть введён корректно", Toast.LENGTH_SHORT).show()
+                }
+                else {
+                    val scaledBitmap = trilinear(originalBitmap, scaleFactor)
+                    val scaledUri = dispatchToGallery(scaledBitmap)
+
+                    val intent = Intent(this, ThirdActivity::class.java)
+                    intent.putExtra("imageSource", "gallery")
+                    intent.putExtra("imageUri", scaledUri.toString())
+                    startActivity(intent)
+                }
             }
-            else//будет трилинейка
+            else
                 Toast.makeText(this, "Введите коэффициент масштабирования", Toast.LENGTH_SHORT).show()
         }
     }
 
-    private fun scaleAndSaveBitmap(bitmap: Bitmap, scaleFactor: Float): Uri {
-        val scaledBitmap = scaleBitmap(bitmap, scaleFactor)
-        val savedUri = dispatchToGallery(scaledBitmap)
-        return savedUri
-    }
-
-    private fun scaleBitmap(bitmap: Bitmap, scaleFactor: Float): Bitmap {
+    private fun trilinear(bitmap: Bitmap, scaleFactor: Float): Bitmap {
         val newWidth = (bitmap.width * scaleFactor).toInt()
         val newHeight = (bitmap.height * scaleFactor).toInt()
 
@@ -74,14 +79,21 @@ class ScalingActivity: AppCompatActivity() {
                 val xFraction = x * scaleX - xOrigin
                 val yFraction = y * scaleY - yOrigin
 
-                val upperLeftPixel = getPixelSafely(bitmap, xOrigin, yOrigin)
-                val upperRightPixel = getPixelSafely(bitmap, xOrigin + 1, yOrigin)
-                val lowerLeftPixel = getPixelSafely(bitmap, xOrigin, yOrigin + 1)
-                val lowerRightPixel = getPixelSafely(bitmap, xOrigin + 1, yOrigin + 1)
+                val origin = getPixelSafely(bitmap, xOrigin, yOrigin)
+                val right = getPixelSafely(bitmap, xOrigin + 1, yOrigin)
+                val upper = getPixelSafely(bitmap, xOrigin, yOrigin + 1)
+                val upperRight = getPixelSafely(bitmap, xOrigin + 1, yOrigin + 1)
 
-                val interpolatedPixel = bilinearInterpolation(
-                    upperLeftPixel, upperRightPixel, lowerLeftPixel, lowerRightPixel,
-                    xFraction, yFraction)
+                val upperLeft = getPixelSafely(bitmap, xOrigin - 1, yOrigin + 1)
+                val left = getPixelSafely(bitmap, xOrigin - 1, yOrigin)
+                val lowerLeft = getPixelSafely(bitmap, xOrigin - 1, yOrigin - 1)
+                val lower = getPixelSafely(bitmap, xOrigin, yOrigin - 1)
+
+                val zFraction = 1.0f
+
+                val interpolatedPixel = trilinearInterpolation(origin, right, upper, upperRight,
+                                                               upperLeft, left, lowerLeft, lower,
+                                                               xFraction, yFraction, zFraction)
 
                 newBitmap.setPixel(x, y, interpolatedPixel)
             }
@@ -89,12 +101,54 @@ class ScalingActivity: AppCompatActivity() {
         return newBitmap
     }
 
-    private fun bilinearInterpolation(upperLeft: Int, upperRight: Int, lowerLeft: Int, lowerRight: Int,
-                                      xFraction: Float, yFraction: Float): Int {
-        val upperBlend = blendColors(upperLeft, upperRight, xFraction)
-        val lowerBlend = blendColors(lowerLeft, lowerRight, xFraction)
 
-        return blendColors(upperBlend, lowerBlend, yFraction)
+    private fun trilinearInterpolation(
+        origin: Int, right: Int, upper: Int, upperRight: Int,
+        upperLeft: Int, left: Int, lowerLeft: Int, lower: Int,
+        xFraction: Float, yFraction: Float, zFraction: Float): Int {
+
+        val firstSlice = bilinearInterpolation(origin, right, upper, upperRight, xFraction, yFraction)
+        val secondSlice = bilinearInterpolation(upperLeft, left, lowerLeft, lower, xFraction, yFraction)
+
+        return blendColors(firstSlice, secondSlice, zFraction)
+    }
+
+    private fun bilinear(bitmap: Bitmap, scaleFactor: Float): Bitmap {
+        val newWidth = (bitmap.width * scaleFactor).toInt()
+        val newHeight = (bitmap.height * scaleFactor).toInt()
+
+        val newBitmap = Bitmap.createBitmap(newWidth, newHeight, Bitmap.Config.ARGB_8888)
+
+        val scaleX = bitmap.width / newWidth.toFloat()
+        val scaleY = bitmap.height / newHeight.toFloat()
+
+        for (y in 0 until newHeight)
+            for (x in 0 until newWidth) {
+                val xOrigin = (x * scaleX).toInt()
+                val yOrigin = (y * scaleY).toInt()
+                val xFraction = x * scaleX - xOrigin
+                val yFraction = y * scaleY - yOrigin
+
+                val origin = getPixelSafely(bitmap, xOrigin, yOrigin)
+                val right = getPixelSafely(bitmap, xOrigin + 1, yOrigin)
+                val upper = getPixelSafely(bitmap, xOrigin, yOrigin + 1)
+                val upperRight = getPixelSafely(bitmap, xOrigin + 1, yOrigin + 1)
+
+                val interpolatedPixel = bilinearInterpolation(origin, right, upper, upperRight,
+                                                              xFraction, yFraction)
+
+                newBitmap.setPixel(x, y, interpolatedPixel)
+            }
+
+        return newBitmap
+    }
+
+    private fun bilinearInterpolation(origin: Int, right: Int, upper: Int, upperRight: Int,
+                                      xFraction: Float, yFraction: Float): Int {
+        val firstSlice = blendColors(upper, upperRight, xFraction)
+        val secondSlice = blendColors(origin, right, xFraction)
+
+        return blendColors(firstSlice, secondSlice, yFraction)
     }
 
     private fun dispatchToGallery(bitmap: Bitmap): Uri {
@@ -110,7 +164,6 @@ class ScalingActivity: AppCompatActivity() {
         return Uri.fromFile(imageFile)
     }
 
-
     private fun getPixelSafely(bitmap: Bitmap, x: Int, y: Int): Int {
         if (x < 0 || y < 0 || x >= bitmap.width || y >= bitmap.height)
             return 0
@@ -118,12 +171,12 @@ class ScalingActivity: AppCompatActivity() {
             return bitmap.getPixel(x, y)
     }
 
-    private fun blendColors(color1: Int, color2: Int, fraction: Float): Int {
+    private fun blendColors(firstSlice: Int, secondSlice: Int, fraction: Float): Int {
         val inverseFraction = 1 - fraction
-        val alpha = (Color.alpha(color1) * inverseFraction + Color.alpha(color2) * fraction).roundToInt()
-        val red = (Color.red(color1) * inverseFraction + Color.red(color2) * fraction).roundToInt()
-        val green = (Color.green(color1) * inverseFraction + Color.green(color2) * fraction).roundToInt()
-        val blue = (Color.blue(color1) * inverseFraction + Color.blue(color2) * fraction).roundToInt()
+        val alpha = (Color.alpha(firstSlice) * inverseFraction + Color.alpha(secondSlice) * fraction).roundToInt()
+        val red = (Color.red(firstSlice) * inverseFraction + Color.red(secondSlice) * fraction).roundToInt()
+        val green = (Color.green(firstSlice) * inverseFraction + Color.green(secondSlice) * fraction).roundToInt()
+        val blue = (Color.blue(firstSlice) * inverseFraction + Color.blue(secondSlice) * fraction).roundToInt()
 
         return Color.argb(alpha, red, green, blue)
     }
