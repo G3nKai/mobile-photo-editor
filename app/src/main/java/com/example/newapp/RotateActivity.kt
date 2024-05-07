@@ -82,10 +82,9 @@ class RotateActivity : AppCompatActivity() {
 
         val rotate_button = binding.butt
         var modifiedBitmap: Bitmap? = null
+        val drawable = binding.imageView2.drawable
 
         rotate_button.setOnClickListener {
-
-            val drawable = binding.imageView2.drawable
 
             if (drawable is BitmapDrawable) {
                 val bitmap = drawable.bitmap
