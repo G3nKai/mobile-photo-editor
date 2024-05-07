@@ -9,16 +9,29 @@
     android:gravity="center">
 
     <TextView
-        android:id="@+id/textViewFilter"
+        android:id="@+id/textViewOrigin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="260dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/inter_bold"
+        android:text="Отменить"
+        android:textColor="#fafafa"
+        android:textSize="13sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textViewSave"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="16dp"
         android:fontFamily="@font/inter_bold"
         android:text="Применить"
         android:textColor="#fafafa"
         android:textSize="13sp"
-        app:layout_constraintBottom_toTopOf="@+id/imageViewFilter"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
@@ -82,7 +95,7 @@
                 android:text="Шум" />
 
             <Button
-                android:id="@+id/buttonContrast"
+                android:id="@+id/buttonsContrast"
                 android:layout_margin="5dp"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"

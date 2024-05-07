@@ -17,6 +17,7 @@ import java.util.Random
 class FiltersActivity: AppCompatActivity() {
     private lateinit var binding: ActivityFiltersBinding
     private lateinit var originalBitmap: Bitmap
+    private lateinit var currentBitmap: Bitmap
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,6 +27,8 @@ class FiltersActivity: AppCompatActivity() {
         val imageUri = Uri.parse(intent.getStringExtra("imageUri"))
         originalBitmap = BitmapFactory.decodeStream(contentResolver.openInputStream(imageUri))
         binding.imageViewFilter.setImageBitmap(originalBitmap)
+
+        currentBitmap = originalBitmap
 
         binding.buttonNegative.setOnClickListener {
             applyNegativeFilter()
@@ -47,14 +50,14 @@ class FiltersActivity: AppCompatActivity() {
             applyNoiseFilter()
         }
 
-        binding.buttonContrast.setOnClickListener {
+        binding.buttonsContrast.setOnClickListener {
             applyContrastFilter()
         }
     }
 
     private fun applyNegativeFilter() {
-        val negativeBitmap = applyNegativeEffect(originalBitmap)
-        binding.imageViewFilter.setImageBitmap(negativeBitmap)
+        currentBitmap = applyNegativeEffect(currentBitmap)
+        binding.imageViewFilter.setImageBitmap(currentBitmap)
     }
 
     private fun applyNegativeEffect(bitmap: Bitmap): Bitmap {
@@ -79,8 +82,8 @@ class FiltersActivity: AppCompatActivity() {
     }
 
     private fun applyMosaicFilter() {
-        val mosaicBitmap = applyMosaicEffect(originalBitmap, 12)
-        binding.imageViewFilter.setImageBitmap(mosaicBitmap)
+        currentBitmap = applyMosaicEffect(currentBitmap, 12)
+        binding.imageViewFilter.setImageBitmap(currentBitmap)
     }
     fun getMosaicColor(bitmap: Bitmap, startX: Int, startY: Int, mosaicSize: Int): Int {
         val width = bitmap.width
@@ -131,8 +134,8 @@ class FiltersActivity: AppCompatActivity() {
     }
 
     private fun applyGaussianFilter() {
-        val gaussianBitmap = applyGaussianBlur(originalBitmap, 5.2)
-        binding.imageViewFilter.setImageBitmap(gaussianBitmap)
+        currentBitmap = applyGaussianBlur(currentBitmap, 5.2)
+        binding.imageViewFilter.setImageBitmap(currentBitmap)
     }
     fun applyGaussianBlur (bitmap: Bitmap, radius: Double) : Bitmap{
         val width = bitmap.width
@@ -182,8 +185,8 @@ class FiltersActivity: AppCompatActivity() {
     }
 
     private fun applyFishFilter() {
-        val fishBitmap = applyFishEyeEffect(originalBitmap)
-        binding.imageViewFilter.setImageBitmap(fishBitmap)
+        currentBitmap = applyFishEyeEffect(currentBitmap)
+        binding.imageViewFilter.setImageBitmap(currentBitmap)
     }
     fun applyFishEyeEffect(inputBitmap: Bitmap): Bitmap {
         val width = inputBitmap.width
@@ -219,8 +222,8 @@ class FiltersActivity: AppCompatActivity() {
     }
 
     private fun applyNoiseFilter() {
-        val noiseBitmap = applyNoiseEffect(originalBitmap, 50)
-        binding.imageViewFilter.setImageBitmap(noiseBitmap)
+        currentBitmap = applyNoiseEffect(currentBitmap, 50)
+        binding.imageViewFilter.setImageBitmap(currentBitmap)
     }
     fun applyNoiseEffect(bitmap: Bitmap, valueOfNoise: Int) : Bitmap {
         val random = Random()
@@ -250,8 +253,8 @@ class FiltersActivity: AppCompatActivity() {
     }
 
     private fun applyContrastFilter() {
-        val contrastBitmap = increaseContrast(originalBitmap, 2.0f)
-        binding.imageViewFilter.setImageBitmap(contrastBitmap)
+        currentBitmap = increaseContrast(currentBitmap, 2.0f)
+        binding.imageViewFilter.setImageBitmap(currentBitmap)
     }
     fun increaseContrast(bitmap: Bitmap, contrastValue : Float) : Bitmap {
         val width = bitmap.width
