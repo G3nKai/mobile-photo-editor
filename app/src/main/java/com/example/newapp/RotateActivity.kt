@@ -2,6 +2,7 @@ package com.example.newapp
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -42,8 +43,22 @@ class RotateActivity : AppCompatActivity() {
         binding.imageView2.setImageURI(imageUri)
         originalBitmap = BitmapFactory.decodeStream(contentResolver.openInputStream(imageUri))
         binding.imageView2.setImageBitmap(originalBitmap)
+        val button = binding.butt
+        var modifiedBitmap: Bitmap? = null
 
-        
+        binding.imageView2.post {
 
+            button.setOnClickListener {
+
+                val drawable = binding.imageView2.drawable
+
+                if (drawable is BitmapDrawable) {
+                    val bitmap = drawable.bitmap
+                    modifiedBitmap = rotate_photo(bitmap)
+                }
+
+                binding.imageView2.setImageBitmap(modifiedBitmap)
+            }
+        }
     }
 }
