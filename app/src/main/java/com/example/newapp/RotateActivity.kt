@@ -43,7 +43,7 @@ class RotateActivity : AppCompatActivity() {
         originalBitmap = BitmapFactory.decodeStream(contentResolver.openInputStream(imageUri))
         binding.imageView2.setImageBitmap(originalBitmap)
 
-
+        
 
     }
 }
