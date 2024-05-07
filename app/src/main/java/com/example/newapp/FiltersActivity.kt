@@ -75,6 +75,18 @@ class FiltersActivity: AppCompatActivity() {
 
     }
 
+    private fun dispatchToGallery(bitmap: Bitmap): Uri {
+        val imagesDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        val imageFile = File(imagesDir, "scaled_image.png")
+
+        val outputStream = FileOutputStream(imageFile)
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+        outputStream.close()
+
+        MediaScannerConnection.scanFile(this, arrayOf(imageFile.absolutePath), null, null)
+
+        return Uri.fromFile(imageFile)
+    }
     private fun applyNegativeFilter() {
         currentBitmap = applyNegativeEffect(currentBitmap)
         binding.imageViewFilter.setImageBitmap(currentBitmap)
