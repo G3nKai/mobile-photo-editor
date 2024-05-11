@@ -9,13 +9,14 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.newapp.databinding.ActivityRotateBinding
 import android.graphics.Color
+import android.widget.Button
 import android.widget.SeekBar
 
 class RotateActivity : AppCompatActivity() {
     private lateinit var binding: ActivityRotateBinding
     private lateinit var originalBitmap: Bitmap
 
-    fun rotate_photo(bitmap: Bitmap, angle: Float): Bitmap? {
+    fun rotate_photo(bitmap: Bitmap, angle: Float): Bitmap {
         val radians = Math.toRadians(angle.toDouble())
         val cosAngle = Math.cos(radians)
         val sinAngle = Math.sin(radians)
@@ -46,6 +47,36 @@ class RotateActivity : AppCompatActivity() {
         }
 
         return rotatedBitmap
+    }
+    fun rotate_photo(bitmap:Bitmap, flag:Boolean): Bitmap?{
+
+        val width = bitmap.width
+        val height = bitmap.height
+        var modifiedBitmap: Bitmap = Bitmap.createBitmap(bitmap.height, bitmap.width, Bitmap.Config.ARGB_8888)
+
+        if (flag) {
+            for (x in 0 until width) {
+
+                for (y in 0 until height) {
+
+                    val pixel = bitmap.getPixel(x, y)
+                    modifiedBitmap.setPixel(height - y - 1, x, pixel)
+
+                }
+            }
+        }
+        else{
+            for (x in width-1 downTo  0) {
+
+                for (y in 0 until height) {
+
+                    val pixel = bitmap.getPixel(x, y)
+                    modifiedBitmap.setPixel(y, width - x - 1, pixel)
+                }
+            }
+        }
+
+        return modifiedBitmap;
     }
 
 
@@ -81,17 +112,41 @@ class RotateActivity : AppCompatActivity() {
 
 
         val rotate_button = binding.butt
-        var modifiedBitmap: Bitmap? = null
-        val drawable = binding.imageView2.drawable
+        var modifiedBit: Bitmap? = null
+        val drawa = binding.imageView2.drawable
 
         rotate_button.setOnClickListener {
 
+            if (drawa is BitmapDrawable) {
+                val bitmap = drawa.bitmap
+                modifiedBit = rotate_photo(bitmap, Degree.toFloat())
+            }
+            binding.imageView2.setImageBitmap(modifiedBit)
+        }
+
+        val rotateTo90:Button = binding.Rotate90
+        val rotateTo270 = binding.Rotate270
+        rotateTo90.setOnClickListener{
+
+            var modifiedBitmap: Bitmap? = null
+            val drawable = binding.imageView2.drawable
+
             if (drawable is BitmapDrawable) {
                 val bitmap = drawable.bitmap
-                modifiedBitmap = rotate_photo(bitmap, Degree.toFloat())
+                modifiedBitmap = rotate_photo(bitmap,true)
             }
             binding.imageView2.setImageBitmap(modifiedBitmap)
         }
 
+        rotateTo270.setOnClickListener{
+            var modifiedBitmap: Bitmap? = null
+            val drawable = binding.imageView2.drawable
+
+            if (drawable is BitmapDrawable) {
+                val bitmap = drawable.bitmap
+                modifiedBitmap = rotate_photo(bitmap,false)
+            }
+            binding.imageView2.setImageBitmap(modifiedBitmap)
+        }
     }
 }

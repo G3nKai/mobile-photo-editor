@@ -22,25 +22,27 @@
         android:id="@+id/butt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="220dp"
+        android:layout_marginTop="224dp"
         android:text="Rotate  image"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView2" />
 
     <SeekBar
         android:id="@+id/seekBar"
-        android:layout_width="250dp"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="60dp"
+        android:layout_marginStart="68dp"
         android:layout_marginTop="56dp"
-        android:max="180"
-        android:min="-180"
+        android:max="45"
+        android:min="-45"
         android:progress="0"
         app:layout_constraintBottom_toTopOf="@+id/butt"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView2"
-        app:layout_constraintVertical_bias="0.397" />
+        app:layout_constraintVertical_bias="0.248" />
 
     <TextView
         android:id="@+id/degree"
@@ -50,8 +52,31 @@
         android:text="0deg"
         app:layout_constraintBottom_toTopOf="@+id/butt"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.513"
+        app:layout_constraintHorizontal_bias="0.392"
         app:layout_constraintStart_toEndOf="@+id/seekBar"
         app:layout_constraintTop_toBottomOf="@+id/imageView2"
-        app:layout_constraintVertical_bias="0.572" />
+        app:layout_constraintVertical_bias="0.407" />
+
+    <Button
+        android:id="@+id/Rotate90"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:text="90"
+        app:layout_constraintBottom_toTopOf="@+id/butt"
+        app:layout_constraintEnd_toStartOf="@+id/Rotate270"
+        app:layout_constraintHorizontal_bias="0.348"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/seekBar" />
+
+    <Button
+        android:id="@+id/Rotate270"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="60dp"
+        android:text="-90"
+        app:layout_constraintBottom_toTopOf="@+id/butt"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/seekBar" />
 </androidx.constraintlayout.widget.ConstraintLayout>
