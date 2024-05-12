@@ -33,8 +33,8 @@ class MaskingActivity : AppCompatActivity() {
 
         binding.button3.setOnClickListener {
             val unsharpMaskedBitmap = applyUnsharpMasking(originalBitmap, 5, 1.0f)
-            
-            binding.imageView2.setImageBitmap(unsharpMaskedBitmap)
+            originalBitmap = unsharpMaskedBitmap
+            binding.imageView2.setImageBitmap(originalBitmap)
 
             val message = "Фильтр применён"
             val duration = Toast.LENGTH_SHORT
