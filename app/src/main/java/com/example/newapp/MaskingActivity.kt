@@ -32,7 +32,16 @@ class MaskingActivity : AppCompatActivity() {
         binding.imageView2.setImageBitmap(originalBitmap)
 
         binding.button3.setOnClickListener {
-            val unsharpMaskedBitmap = applyUnsharpMasking(originalBitmap, 5, 1.0f)
+
+            val radiusEditText = binding.radiusEditText
+            val amountEditText = binding.amountEditText
+
+            val radius = radiusEditText.text.toString().toFloatOrNull() ?: 5f
+
+            val amount = amountEditText.text.toString().toFloatOrNull() ?: 1.0f
+
+            val unsharpMaskedBitmap = applyUnsharpMasking(originalBitmap, radius, amount)
+
             originalBitmap = unsharpMaskedBitmap
             binding.imageView2.setImageBitmap(originalBitmap)
 
@@ -72,7 +81,7 @@ class MaskingActivity : AppCompatActivity() {
         return Uri.fromFile(imageFile)
     }
 
-    private fun applyUnsharpMasking(bitmap: Bitmap, radius: Int, amount: Float): Bitmap {
+    private fun applyUnsharpMasking(bitmap: Bitmap, radius: Float, amount: Float): Bitmap {
         val blurredBitmap = applyGaussianBlur(bitmap, radius.toDouble())
         val width = bitmap.width
         val height = bitmap.height
