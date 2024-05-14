@@ -8,6 +8,7 @@ import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
+import android.view.Gravity
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.newapp.databinding.ActivityScalingBinding
@@ -55,7 +56,15 @@ class ScalingActivity: AppCompatActivity() {
 
                 if (scaleFactor > 1) {
                     originalBitmap = bilinear(originalBitmap, scaleFactor)
+                    
                     binding.imageView2.setImageBitmap(originalBitmap)
+
+                    val message = "Применено масштабирование."
+                    val duration = Toast.LENGTH_SHORT
+
+                    val toast = Toast.makeText(applicationContext, message, duration)
+                    toast.setGravity(Gravity.BOTTOM, 0, 100)
+                    toast.show()
                 }
                 else if (scaleFactor <= 0) {
                     Toast.makeText(this, "Масштаб должен быть введён корректно", Toast.LENGTH_SHORT).show()
@@ -64,6 +73,13 @@ class ScalingActivity: AppCompatActivity() {
                     originalBitmap = trilinear(originalBitmap, scaleFactor)
 
                     binding.imageView2.setImageBitmap(originalBitmap)
+
+                    val message = "Применено масштабирование."
+                    val duration = Toast.LENGTH_SHORT
+
+                    val toast = Toast.makeText(applicationContext, message, duration)
+                    toast.setGravity(Gravity.BOTTOM, 0, 100)
+                    toast.show()
                 }
             }
             else
