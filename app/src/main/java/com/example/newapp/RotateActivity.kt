@@ -20,6 +20,7 @@ import java.io.FileOutputStream
 class RotateActivity : AppCompatActivity() {
     private lateinit var binding: ActivityRotateBinding
     private lateinit var originalBitmap: Bitmap
+    private  lateinit var backUpBitmap: Bitmap
 
     fun rotate_photo(bitmap: Bitmap, angle: Float): Bitmap {
         val radians = Math.toRadians(angle.toDouble())
@@ -93,6 +94,7 @@ class RotateActivity : AppCompatActivity() {
         val imageUri = Uri.parse(intent.getStringExtra("imageUri"))
         binding.imageView2.setImageURI(imageUri)
         originalBitmap = BitmapFactory.decodeStream(contentResolver.openInputStream(imageUri))
+        backUpBitmap = originalBitmap
         binding.imageView2.setImageBitmap(originalBitmap)
 
         val seekBar = binding.seekBar
@@ -162,9 +164,8 @@ class RotateActivity : AppCompatActivity() {
         }
 
         binding.cancleBut.setOnClickListener{
-
-            
-
+            originalBitmap = backUpBitmap
+            binding.imageView2.setImageBitmap(originalBitmap)
         }
     }
 
