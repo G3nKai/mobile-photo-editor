@@ -1,0 +1,5 @@
+org.opencv.test.opencv-androidTest-0 D:\app_dev\mobile-photo-editor\opencv\build\generated\res\resValues\androidTest\debug
+org.opencv.test.opencv-mergeDebugAndroidTestResources-1 D:\app_dev\mobile-photo-editor\opencv\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\merged.dir
+org.opencv.test.opencv-mergeDebugAndroidTestResources-2 D:\app_dev\mobile-photo-editor\opencv\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\stripped.dir
+org.opencv.test.opencv-debugAndroidTest-3 D:\app_dev\mobile-photo-editor\opencv\build\intermediates\merged_res\debugAndroidTest\mergeDebugAndroidTestResources
+org.opencv.test.opencv-debug-4 D:\app_dev\mobile-photo-editor\opencv\build\intermediates\packaged_res\debug\packageDebugResources

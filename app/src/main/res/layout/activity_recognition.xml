@@ -15,6 +15,17 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.499"
+        app:layout_constraintVertical_bias="0.161"
         app:srcCompat="@drawable/testimg" />
+
+    <Button
+        android:id="@+id/recBut"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="распознать"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView2"
+        app:layout_constraintVertical_bias="0.524" />
 </androidx.constraintlayout.widget.ConstraintLayout>
