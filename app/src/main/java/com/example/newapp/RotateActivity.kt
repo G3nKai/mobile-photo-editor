@@ -1,5 +1,6 @@
 package com.example.newapp
 
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
@@ -151,6 +152,15 @@ class RotateActivity : AppCompatActivity() {
                 modifiedBitmap = rotate_photo(bitmap,false)
             }
             binding.imageView2.setImageBitmap(modifiedBitmap)
+        }
+
+        binding.saveBut.setOnClickListener {
+            val rotatedUri = modifiedBitmap?.let { dispatchToGallery(it) } ?: dispatchToGallery(originalBitmap)
+
+            val intent = Intent(this, ThirdActivity::class.java)
+            intent.putExtra("imageSource", "gallery")
+            intent.putExtra("imageUri", rotatedUri.toString())
+            startActivity(intent)
         }
     }
 
