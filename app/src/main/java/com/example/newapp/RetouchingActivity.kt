@@ -12,6 +12,8 @@ import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.Gravity
 import android.view.MotionEvent
 import android.widget.Button
@@ -112,7 +114,6 @@ class RetouchingActivity : AppCompatActivity() {
                 }
             }
             true
-
         }
 
         val goButton: Button = findViewById(R.id.go)
@@ -126,8 +127,36 @@ class RetouchingActivity : AppCompatActivity() {
             toast.setGravity(Gravity.BOTTOM, 0, 100)
             toast.show()
         }
-    }
 
+        binding.editTextBrushSize.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                val textSizeString = binding.editTextBrushSize.text.toString()
+                try {
+                    val textSize = textSizeString.toFloat()
+                    updateBrushSize(textSize)
+                } catch (e: NumberFormatException) {
+                    e.printStackTrace()
+                    val message = "Введите число"
+                    val duration = Toast.LENGTH_SHORT
+                    val toast = Toast.makeText(applicationContext, message, duration)
+                    toast.show()
+                }
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        })
+    }
+    private fun updateBrushSize(brushSize: Float) {
+        if (brushSize in 0f..21f) {
+            paint.strokeWidth = brushSize
+        } else {
+            val message = "Введите число от 1 до 20"
+            val duration = Toast.LENGTH_SHORT
+            val toast = Toast.makeText(applicationContext, message, duration)
+            toast.show()
+        }
+    }
     private fun dispatchToGallery(bitmap: Bitmap): Uri {
         val imagesDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         val imageFile = File(imagesDir, "scaled_image.png")
@@ -214,3 +243,4 @@ class RetouchingActivity : AppCompatActivity() {
         return Color.rgb(averageRed, averageGreen, averageBlue)
     }
 }
+
