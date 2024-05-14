@@ -133,34 +133,38 @@ class RotateActivity : AppCompatActivity() {
         val rotateTo270 = binding.Rotate270
         rotateTo90.setOnClickListener{
 
-            var modifiedBitmap: Bitmap? = null
             val drawable = binding.imageView2.drawable
 
             if (drawable is BitmapDrawable) {
                 val bitmap = drawable.bitmap
-                modifiedBitmap = rotate_photo(bitmap,true)
+                modifiedBit = rotate_photo(bitmap,true)
             }
-            binding.imageView2.setImageBitmap(modifiedBitmap)
+            binding.imageView2.setImageBitmap(modifiedBit)
         }
 
         rotateTo270.setOnClickListener{
-            var modifiedBitmap: Bitmap? = null
             val drawable = binding.imageView2.drawable
 
             if (drawable is BitmapDrawable) {
                 val bitmap = drawable.bitmap
-                modifiedBitmap = rotate_photo(bitmap,false)
+                modifiedBit = rotate_photo(bitmap,false)
             }
-            binding.imageView2.setImageBitmap(modifiedBitmap)
+            binding.imageView2.setImageBitmap(modifiedBit)
         }
 
         binding.saveBut.setOnClickListener {
-            val rotatedUri = modifiedBitmap?.let { dispatchToGallery(it) } ?: dispatchToGallery(originalBitmap)
+            val rotatedUri = modifiedBit?.let { dispatchToGallery(it) } ?: dispatchToGallery(originalBitmap)
 
             val intent = Intent(this, ThirdActivity::class.java)
             intent.putExtra("imageSource", "gallery")
             intent.putExtra("imageUri", rotatedUri.toString())
             startActivity(intent)
+        }
+
+        binding.cancleBut.setOnClickListener{
+
+            
+
         }
     }
 
