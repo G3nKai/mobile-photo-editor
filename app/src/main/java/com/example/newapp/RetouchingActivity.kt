@@ -1,14 +1,17 @@
 package com.example.newapp
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Matrix
 import android.graphics.Paint
+import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.view.Gravity
 import android.view.MotionEvent
 import android.widget.Button
@@ -16,6 +19,8 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.newapp.databinding.ActivityRetouchingBinding
+import java.io.File
+import java.io.FileOutputStream
 
 class RetouchingActivity : AppCompatActivity() {
     private lateinit var binding: ActivityRetouchingBinding
@@ -41,6 +46,25 @@ class RetouchingActivity : AppCompatActivity() {
 
         originalBitmap = BitmapFactory.decodeStream(contentResolver.openInputStream(imageUri))
         binding.imageViewRetouched.setImageBitmap(originalBitmap)
+
+        binding.textViewOrigin.setOnClickListener {
+            val imageUriTwo = Uri.parse(intent.getStringExtra("imageUri"))
+            binding.imageViewRetouched.setImageURI(imageUri)
+
+            originalBitmap = BitmapFactory.decodeStream(contentResolver.openInputStream(imageUri))
+            binding.imageViewRetouched.setImageBitmap(originalBitmap)
+        }
+
+
+        binding.textViewSave.setOnClickListener {
+            val scaledUri = dispatchToGallery(originalBitmap)
+
+            val intent = Intent(this, ThirdActivity::class.java)
+            intent.putExtra("imageSource", "gallery")
+            intent.putExtra("imageUri", scaledUri.toString())
+            startActivity(intent)
+        }
+
 
         initDrawLineBitmap()
 
@@ -104,6 +128,18 @@ class RetouchingActivity : AppCompatActivity() {
         }
     }
 
+    private fun dispatchToGallery(bitmap: Bitmap): Uri {
+        val imagesDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        val imageFile = File(imagesDir, "scaled_image.png")
+
+        val outputStream = FileOutputStream(imageFile)
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+        outputStream.close()
+
+        MediaScannerConnection.scanFile(this, arrayOf(imageFile.absolutePath), null, null)
+
+        return Uri.fromFile(imageFile)
+    }
     private fun initDrawLineBitmap() {
         drawLineBitmap = Bitmap.createBitmap(originalBitmap.width, originalBitmap.height, Bitmap.Config.ARGB_8888)
     }
