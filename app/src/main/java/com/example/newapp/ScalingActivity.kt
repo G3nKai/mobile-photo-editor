@@ -8,6 +8,7 @@ import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
+import android.view.Gravity
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.newapp.databinding.ActivityScalingBinding
@@ -18,6 +19,7 @@ import kotlin.math.roundToInt
 class ScalingActivity: AppCompatActivity() {
     private lateinit var binding: ActivityScalingBinding
     private lateinit var originalBitmap: Bitmap
+    private lateinit var backUpBitmap: Bitmap
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,6 +32,22 @@ class ScalingActivity: AppCompatActivity() {
         originalBitmap = BitmapFactory.decodeStream(contentResolver.openInputStream(imageUri))
         binding.imageView2.setImageBitmap(originalBitmap)
 
+        backUpBitmap = originalBitmap.copy(originalBitmap.config, true)
+
+        binding.accept.setOnClickListener {
+            val scaledUri = dispatchToGallery(originalBitmap)
+
+            val intent = Intent(this, ThirdActivity::class.java)
+            intent.putExtra("imageSource", "gallery")
+            intent.putExtra("imageUri", scaledUri.toString())
+            startActivity(intent)
+        }
+
+        binding.cancel.setOnClickListener {
+            originalBitmap = backUpBitmap
+            binding.imageView2.setImageBitmap(originalBitmap)
+        }
+
         binding.scaleButton.setOnClickListener {
             val scaleFactorText = binding.scaleFactorEditText.text.toString()
 
@@ -37,25 +55,31 @@ class ScalingActivity: AppCompatActivity() {
                 val scaleFactor = scaleFactorText.toFloat()
 
                 if (scaleFactor > 1) {
-                    val scaledBitmap = bilinear(originalBitmap, scaleFactor)
-                    val scaledUri = dispatchToGallery(scaledBitmap)
+                    originalBitmap = bilinear(originalBitmap, scaleFactor)
+                    
+                    binding.imageView2.setImageBitmap(originalBitmap)
 
-                    val intent = Intent(this, ThirdActivity::class.java)
-                    intent.putExtra("imageSource", "gallery")
-                    intent.putExtra("imageUri", scaledUri.toString())
-                    startActivity(intent)
+                    val message = "Применено масштабирование."
+                    val duration = Toast.LENGTH_SHORT
+
+                    val toast = Toast.makeText(applicationContext, message, duration)
+                    toast.setGravity(Gravity.BOTTOM, 0, 100)
+                    toast.show()
                 }
                 else if (scaleFactor <= 0) {
                     Toast.makeText(this, "Масштаб должен быть введён корректно", Toast.LENGTH_SHORT).show()
                 }
                 else {
-                    val scaledBitmap = trilinear(originalBitmap, scaleFactor)
-                    val scaledUri = dispatchToGallery(scaledBitmap)
+                    originalBitmap = trilinear(originalBitmap, scaleFactor)
 
-                    val intent = Intent(this, ThirdActivity::class.java)
-                    intent.putExtra("imageSource", "gallery")
-                    intent.putExtra("imageUri", scaledUri.toString())
-                    startActivity(intent)
+                    binding.imageView2.setImageBitmap(originalBitmap)
+
+                    val message = "Применено масштабирование."
+                    val duration = Toast.LENGTH_SHORT
+
+                    val toast = Toast.makeText(applicationContext, message, duration)
+                    toast.setGravity(Gravity.BOTTOM, 0, 100)
+                    toast.show()
                 }
             }
             else
