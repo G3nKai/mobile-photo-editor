@@ -36,7 +36,7 @@ class MaskingActivity : AppCompatActivity() {
             originalBitmap = unsharpMaskedBitmap
             binding.imageView2.setImageBitmap(originalBitmap)
 
-            val message = "Фильтр применён"
+            val message = "Применено нерезкое маскирование."
             val duration = Toast.LENGTH_SHORT
 
             val toast = Toast.makeText(applicationContext, message, duration)
@@ -55,6 +55,7 @@ class MaskingActivity : AppCompatActivity() {
 
         binding.cancel.setOnClickListener {
             originalBitmap = backUpBitmap
+            binding.imageView2.setImageBitmap(originalBitmap)
         }
     }
 
