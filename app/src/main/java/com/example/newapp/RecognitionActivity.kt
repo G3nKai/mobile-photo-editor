@@ -17,6 +17,7 @@ import org.opencv.core.Mat
 import org.opencv.core.MatOfRect
 import org.opencv.core.Rect as OpenCVRect
 import org.opencv.core.Scalar
+import org.opencv.core.Size
 import org.opencv.imgproc.Imgproc
 import org.opencv.objdetect.CascadeClassifier
 import java.io.File
@@ -29,6 +30,7 @@ class RecognitionActivity : AppCompatActivity() {
     private lateinit var mRgb: Mat
     private lateinit var mGray: Mat
     private lateinit var cascadeClassifier: CascadeClassifier
+    private var absoluteFaceSize: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,14 +51,20 @@ class RecognitionActivity : AppCompatActivity() {
         mRgb = Mat()
         mGray = Mat()
 
+        //size of face
+        val heightofimg = mGray.rows()
+        if( Math.round(heightofimg * 0.2f) > 0){
+            absoluteFaceSize = Math.round(heightofimg * 0.2f)
+        }
+
         Utils.bitmapToMat(originalBitmap, mRgb)
         Imgproc.cvtColor(mRgb, mGray, Imgproc.COLOR_BGR2GRAY)
 
         //  Loading the model
         try {
-            val inputStream = resources.openRawResource(R.raw.haarcascade_frontalface_default)
+            val inputStream = resources.openRawResource(R.raw.haarcascade_frontalface_alt)
             val cascadeDir = getDir("cascade", Context.MODE_PRIVATE)
-            val cascadeFile = File(cascadeDir, "haarcascade_frontalface_default.xml")
+            val cascadeFile = File(cascadeDir, "haarcascade_frontalface_alt.xml")
             val outputStream = FileOutputStream(cascadeFile)
 
             val buffer = ByteArray(4096)
@@ -79,9 +87,13 @@ class RecognitionActivity : AppCompatActivity() {
         }
     }
 
+    //function for detecting faces
     private fun detectFaces() {
         val faceDetections = MatOfRect()
-        cascadeClassifier.detectMultiScale(mGray, faceDetections)
+        cascadeClassifier.detectMultiScale(
+            mGray, faceDetections, 1.2, 2 , 2,
+            Size(absoluteFaceSize.toDouble(), absoluteFaceSize.toDouble()), Size()
+        )
 
         val facesArray = faceDetections.toArray()
         Log.d("OpenCVActivity", "Detected ${facesArray.size} faces")
