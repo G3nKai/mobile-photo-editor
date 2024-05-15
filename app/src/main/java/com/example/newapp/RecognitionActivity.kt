@@ -75,8 +75,33 @@ class RecognitionActivity : AppCompatActivity() {
 
         // detecting feces after click
         binding.recButt.setOnClickListener {
-            
+            detectFaces()
         }
     }
 
+    private fun detectFaces() {
+        val faceDetections = MatOfRect()
+        cascadeClassifier.detectMultiScale(mGray, faceDetections)
+
+        val facesArray = faceDetections.toArray()
+        Log.d("OpenCVActivity", "Detected ${facesArray.size} faces")
+
+        val mutableBitmap = originalBitmap.copy(Bitmap.Config.ARGB_8888, true)
+        val canvas = Canvas(mutableBitmap)
+        val paint = Paint().apply {
+            color = android.graphics.Color.RED
+            style = Paint.Style.STROKE
+            strokeWidth = 5f
+        }
+
+        for (rect in facesArray) {
+            val left = rect.x
+            val top = rect.y
+            val right = rect.x + rect.width
+            val bottom = rect.y + rect.height
+            canvas.drawRect(left.toFloat(), top.toFloat(), right.toFloat(), bottom.toFloat(), paint)
+        }
+
+        binding.imageView2.setImageBitmap(mutableBitmap)
+    }
 }
