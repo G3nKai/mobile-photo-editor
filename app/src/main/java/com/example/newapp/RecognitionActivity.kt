@@ -3,6 +3,9 @@ package com.example.newapp
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Canvas
+import android.graphics.Paint
+import android.graphics.Rect
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -10,8 +13,9 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.newapp.databinding.ActivityRecognitionBinding
 import org.opencv.android.OpenCVLoader
 import org.opencv.android.Utils
-import org.opencv.core.Core
 import org.opencv.core.Mat
+import org.opencv.core.MatOfRect
+import org.opencv.core.Rect as OpenCVRect
 import org.opencv.core.Scalar
 import org.opencv.imgproc.Imgproc
 import org.opencv.objdetect.CascadeClassifier
@@ -24,7 +28,6 @@ class RecognitionActivity : AppCompatActivity() {
     private lateinit var originalBitmap: Bitmap
     private lateinit var mRgb: Mat
     private lateinit var mGray: Mat
-
     private lateinit var cascadeClassifier: CascadeClassifier
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,21 +46,14 @@ class RecognitionActivity : AppCompatActivity() {
         originalBitmap = BitmapFactory.decodeStream(contentResolver.openInputStream(imageUri))
         binding.imageView2.setImageBitmap(originalBitmap)
 
-        // Initialize Mat objects
         mRgb = Mat()
         mGray = Mat()
 
         Utils.bitmapToMat(originalBitmap, mRgb)
         Imgproc.cvtColor(mRgb, mGray, Imgproc.COLOR_BGR2GRAY)
 
-        val modifiedBitmap = Bitmap.createBitmap(mGray.cols(), mGray.rows(), Bitmap.Config.ARGB_8888)
-        Utils.matToBitmap(mGray, modifiedBitmap)
-
-        binding.imageView2.setImageBitmap(modifiedBitmap)
-
-        // Loading the model
+        //  Loading the model
         try {
-            // Copy the resource into a temp file so OpenCV can load it
             val inputStream = resources.openRawResource(R.raw.haarcascade_frontalface_default)
             val cascadeDir = getDir("cascade", Context.MODE_PRIVATE)
             val cascadeFile = File(cascadeDir, "haarcascade_frontalface_default.xml")
@@ -76,5 +72,11 @@ class RecognitionActivity : AppCompatActivity() {
         } catch (e: Exception) {
             Log.e("OpenCVActivity", "Error loading cascade", e)
         }
+
+        // detecting feces after click
+        binding.recButt.setOnClickListener {
+            
+        }
     }
+
 }
