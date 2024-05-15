@@ -1,3 +1,0 @@
--- Configuring done
--- Generating done
--- Build files have been written to: D:/app_dev/mobile-photo-editor/opencv/.cxx/Debug/2f6t2w56/armeabi-v7a
