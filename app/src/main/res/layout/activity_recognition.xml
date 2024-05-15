@@ -19,7 +19,7 @@
         app:srcCompat="@drawable/testimg" />
 
     <Button
-        android:id="@+id/recBut"
+        android:id="@+id/recButt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="распознать"
