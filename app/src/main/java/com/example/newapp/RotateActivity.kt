@@ -99,7 +99,7 @@ class RotateActivity : AppCompatActivity() {
 
         val seekBar = binding.seekBar
         val txtDeg = binding.degree
-        var Degree:Int = 0
+        var Degree:Int = 90
 
         seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
