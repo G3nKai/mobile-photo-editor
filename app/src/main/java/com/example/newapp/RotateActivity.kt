@@ -162,6 +162,7 @@ class RotateActivity : AppCompatActivity() {
 
         binding.cancleBut.setOnClickListener{
             originalBitmap = backUpBitmap
+            modifiedBit = backUpBitmap
             binding.imageView2.setImageBitmap(originalBitmap)
         }
     }
