@@ -95,27 +95,6 @@ class RotateActivity : AppCompatActivity() {
             }
             binding.imageView2.setImageBitmap(modifiedBitmap)
         }
-
-        binding.button4.setOnClickListener {
-            val rotatedUri = modifiedBitmap?.let { dispatchToGallery(it) } ?: dispatchToGallery(originalBitmap)
-
-            val intent = Intent(this, ThirdActivity::class.java)
-            intent.putExtra("imageSource", "gallery")
-            intent.putExtra("imageUri", rotatedUri.toString())
-            startActivity(intent)
-        }
     }
 
-    private fun dispatchToGallery(bitmap: Bitmap): Uri {
-        val imagesDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        val imageFile = File(imagesDir, "scaled_image.png")
-
-        val outputStream = FileOutputStream(imageFile)
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
-        outputStream.close()
-
-        MediaScannerConnection.scanFile(this, arrayOf(imageFile.absolutePath), null, null)
-
-        return Uri.fromFile(imageFile)
-    }
 }
