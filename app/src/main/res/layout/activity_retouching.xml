@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#4B4453"
-    android:gravity="center">
+    android:gravity="center"
+    tools:context=".RetouchingActivity">
 
     <TextView
         android:id="@+id/textViewOrigin"
@@ -72,8 +73,35 @@
         app:layout_constraintBottom_toTopOf="@+id/go"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/textViewBrushSize"
+        app:layout_constraintTop_toBottomOf="@+id/imageViewRetouched" />
+
+    <TextView
+        android:id="@+id/textViewKaf"
+        android:layout_width="112dp"
+        android:layout_height="30dp"
+        android:layout_marginBottom="12dp"
+        android:text="Коэффициент:"
+        android:textColor="#fafafa"
+        android:textSize="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/go"
+        app:layout_constraintEnd_toStartOf="@+id/editTextKaf"
+        app:layout_constraintHorizontal_bias="0.739"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageViewRetouched"
-        />
+        app:layout_constraintVertical_bias="0.847" />
+
+    <EditText
+        android:id="@+id/editTextKaf"
+        android:layout_width="82dp"
+        android:layout_height="wrap_content"
+        android:hint=""
+        android:inputType="numberDecimal"
+        android:textSize="15dp"
+        app:layout_constraintBottom_toTopOf="@+id/go"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/textViewKaf"
+        app:layout_constraintTop_toBottomOf="@+id/imageViewRetouched"
+        app:layout_constraintVertical_bias="0.595" />
 
     <Button
         android:id="@+id/go"
@@ -86,4 +114,5 @@
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/imageViewRetouched" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

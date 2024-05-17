@@ -35,6 +35,7 @@ class RetouchingActivity : AppCompatActivity() {
     private var startY = -1f
     private var endX = -1f
     private var endY = -1f
+    private var radius = 10f
     private val touchedPixels = mutableListOf<Pair<Float, Float>>()
 
     @SuppressLint("ClickableViewAccessibility")
@@ -55,6 +56,7 @@ class RetouchingActivity : AppCompatActivity() {
 
             originalBitmap = BitmapFactory.decodeStream(contentResolver.openInputStream(imageUri))
             binding.imageViewRetouched.setImageBitmap(originalBitmap)
+            retouchedBitmap = originalBitmap.copy(Bitmap.Config.ARGB_8888, true)
         }
 
 
@@ -146,6 +148,25 @@ class RetouchingActivity : AppCompatActivity() {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
+
+        binding.editTextKaf.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                val kafString = binding.editTextKaf.text.toString()
+                try {
+                    val kaf = kafString.toFloat()
+                    updateKaf(kaf)
+                } catch (e: NumberFormatException) {
+                    e.printStackTrace()
+                    val message = "Введите число"
+                    val duration = Toast.LENGTH_SHORT
+                    val toast = Toast.makeText(applicationContext, message, duration)
+                    toast.show()
+                }
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        })
     }
     private fun updateBrushSize(brushSize: Float) {
         if (brushSize in 0f..21f) {
@@ -157,6 +178,17 @@ class RetouchingActivity : AppCompatActivity() {
             toast.show()
         }
     }
+    private fun updateKaf(kaf: Float) {
+        if (kaf in 4f..26f) {
+            radius = kaf
+        } else {
+            val message = "Введите число от 5 до 25"
+            val duration = Toast.LENGTH_SHORT
+            val toast = Toast.makeText(applicationContext, message, duration)
+            toast.show()
+        }
+    }
+
     private fun dispatchToGallery(bitmap: Bitmap): Uri {
         val imagesDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         val imageFile = File(imagesDir, "scaled_image.png")
@@ -198,7 +230,6 @@ class RetouchingActivity : AppCompatActivity() {
         for (pixel in touchedPixels) {
             val retouchX = pixel.first
             val retouchY = pixel.second
-            val radius = 16f
 
             for (x in (retouchX - radius).toInt() until (retouchX + radius).toInt()) {
                 for (y in (retouchY - radius).toInt() until (retouchY + radius).toInt()) {
@@ -243,4 +274,3 @@ class RetouchingActivity : AppCompatActivity() {
         return Color.rgb(averageRed, averageGreen, averageBlue)
     }
 }
-
