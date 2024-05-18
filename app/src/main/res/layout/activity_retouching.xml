@@ -4,16 +4,115 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#00C0A3">
-    <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="289dp"
-        android:layout_height="210dp"
+    android:background="#4B4453"
+    android:gravity="center"
+    tools:context=".RetouchingActivity">
 
+    <TextView
+        android:id="@+id/textViewOrigin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/inter_bold"
+        android:text="Отменить"
+        android:textColor="#fafafa"
+        android:textSize="13sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textViewSave"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:fontFamily="@font/inter_bold"
+        android:text="Применить"
+        android:textColor="#fafafa"
+        android:textSize="13sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageViewRetouched"
+        android:layout_width="285dp"
+        android:layout_height="491dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.499"
+        app:layout_constraintVertical_bias="0.388"
         app:srcCompat="@drawable/testimg" />
+
+    <TextView
+        android:id="@+id/textViewBrushSize"
+        android:layout_width="112dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="8dp"
+        android:text="Размер кисти:"
+        android:textColor="#fafafa"
+        android:textSize="16dp"
+        app:layout_constraintEnd_toStartOf="@+id/editTextBrushSize"
+        app:layout_constraintHorizontal_bias="0.739"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageViewRetouched" />
+
+    <EditText
+        android:id="@+id/editTextBrushSize"
+        android:layout_width="82dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="9dp"
+        android:layout_marginBottom="61dp"
+        android:hint=""
+        android:inputType="numberDecimal"
+        android:textSize="15dp"
+        app:layout_constraintBottom_toTopOf="@+id/go"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/textViewBrushSize"
+        app:layout_constraintTop_toBottomOf="@+id/imageViewRetouched" />
+
+    <TextView
+        android:id="@+id/textViewKaf"
+        android:layout_width="112dp"
+        android:layout_height="30dp"
+        android:layout_marginBottom="12dp"
+        android:text="Коэффициент:"
+        android:textColor="#fafafa"
+        android:textSize="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/go"
+        app:layout_constraintEnd_toStartOf="@+id/editTextKaf"
+        app:layout_constraintHorizontal_bias="0.739"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageViewRetouched"
+        app:layout_constraintVertical_bias="0.847" />
+
+    <EditText
+        android:id="@+id/editTextKaf"
+        android:layout_width="82dp"
+        android:layout_height="wrap_content"
+        android:hint=""
+        android:inputType="numberDecimal"
+        android:textSize="15dp"
+        app:layout_constraintBottom_toTopOf="@+id/go"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/textViewKaf"
+        app:layout_constraintTop_toBottomOf="@+id/imageViewRetouched"
+        app:layout_constraintVertical_bias="0.595" />
+
+    <Button
+        android:id="@+id/go"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="88dp"
+        android:text="Ретуширование"
+        android:textSize="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/imageViewRetouched" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
