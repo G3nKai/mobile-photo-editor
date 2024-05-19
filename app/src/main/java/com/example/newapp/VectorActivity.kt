@@ -3,7 +3,10 @@ package com.example.newapp
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.*
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Matrix
+import android.graphics.Paint
 import android.net.Uri
 import android.os.Bundle
 import android.view.MotionEvent
@@ -28,7 +31,14 @@ class VectorActivity : AppCompatActivity() {
         strokeWidth = 5f
     }
 
+    private val splinePaint = Paint().apply {
+        color = Color.BLUE
+        style = Paint.Style.STROKE
+        strokeWidth = 5f
+    }
+
     private val points = mutableListOf<Pair<Float, Float>>()
+
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,6 +57,10 @@ class VectorActivity : AppCompatActivity() {
         binding.imageViewVector.setOnTouchListener { _, event ->
             createBrokenLine(event)
             true
+        }
+
+        binding.buttonSpline.setOnClickListener {
+            drawSpline()
         }
     }
 
@@ -77,6 +91,52 @@ class VectorActivity : AppCompatActivity() {
         }
         points.add(Pair(x, y))
         canvas.drawCircle(x, y, 10f, paint)
+        binding.imageViewVector.invalidate()
+    }
+
+    private fun drawSpline() {
+        if (points.size < 2) return
+
+        for (i in 0 until points.size - 1) {
+            val (x0, y0) = if (i == 0) points[i] else points[i - 1]
+            val (x1, y1) = points[i]
+            val (x2, y2) = points[i + 1]
+            val (x3, y3) = if (i + 2 < points.size) points[i + 2] else points[i + 1]
+
+            //контрольные точки сплайна Безье:
+            val cPointX1 = x1 + (x2 - x0) / 6.0f
+            val cPointY1 = y1 + (y2 - y0) / 6.0f
+            val cPointX2 = x2 - (x3 - x1) / 6.0f
+            val cPointY2 = y2 - (y3 - y1) / 6.0f
+
+            //количество сегментов
+            val numSegments = 10
+            val segmentsLength = 1.0f / numSegments
+
+            var prevX = x1
+            var prevY = y1
+
+            for (j in 1..numSegments) {
+
+                val t = segmentsLength * j
+                val t2 = t * t
+                val t3 = t2 * t
+
+                val reverseT = 1.0f - t
+                val reverseT2 = reverseT * reverseT
+                val reverseT3 = reverseT2 * reverseT
+
+                //вычисление координаты по формуле Безье
+                val x = reverseT3 * x1 + 3 * reverseT2 * t * cPointX1 + 3 * reverseT * t2 * cPointX2 + t3 * x2
+                val y = reverseT3 * y1 + 3 * reverseT2 * t * cPointY1 + 3 * reverseT * t2 * cPointY2 + t3 * y2
+
+                canvas.drawLine(prevX, prevY, x, y, splinePaint)
+
+                prevX = x
+                prevY = y
+            }
+        }
+
         binding.imageViewVector.invalidate()
     }
 }

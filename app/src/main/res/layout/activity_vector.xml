@@ -18,4 +18,15 @@ android:background="#4B4453">
     app:layout_constraintVertical_bias="0.499"
     app:srcCompat="@drawable/testimg" />
 
+    <Button
+        android:id="@+id/buttonSpline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="Создать сплайны"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageViewVector"
+        tools:ignore="MissingConstraints" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
