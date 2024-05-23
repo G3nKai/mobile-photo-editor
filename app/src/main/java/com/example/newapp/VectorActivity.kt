@@ -3,17 +3,22 @@
 package com.example.newapp
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Matrix
 import android.graphics.Paint
+import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.view.MotionEvent
 import androidx.appcompat.app.AppCompatActivity
 import com.example.newapp.databinding.ActivityVectorBinding
+import java.io.File
+import java.io.FileOutputStream
 import kotlin.math.pow
 
 class VectorActivity : AppCompatActivity() {
@@ -59,8 +64,41 @@ class VectorActivity : AppCompatActivity() {
         binding.buttonSpline.setOnClickListener {
             drawSpline()
         }
+
+        binding.textViewSave.setOnClickListener {
+            val scaledUri = dispatchToGallery(mutableBitmap)
+
+            val intent = Intent(this, ThirdActivity::class.java)
+            intent.putExtra("imageSource", "gallery")
+            intent.putExtra("imageUri", scaledUri.toString())
+            startActivity(intent)
+        }
+
+        binding.textViewOrigin.setOnClickListener {
+            val imageUriTwo = Uri.parse(intent.getStringExtra("imageUri"))
+            binding.imageViewVector.setImageURI(imageUriTwo)
+
+            originalBitmap = BitmapFactory.decodeStream(contentResolver.openInputStream(imageUriTwo))
+            mutableBitmap = originalBitmap.copy(Bitmap.Config.ARGB_8888, true)
+            canvas = Canvas(mutableBitmap)
+
+            points.clear()
+            binding.imageViewVector.setImageBitmap(mutableBitmap)
+        }
     }
 
+    private fun dispatchToGallery(bitmap: Bitmap): Uri {
+        val imagesDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        val imageFile = File(imagesDir, "scaled_image.png")
+
+        val outputStream = FileOutputStream(imageFile)
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+        outputStream.close()
+
+        MediaScannerConnection.scanFile(this, arrayOf(imageFile.absolutePath), null, null)
+
+        return Uri.fromFile(imageFile)
+    }
     private fun createBrokenLine(event: MotionEvent) {
         val action = event.action
         val imageView = binding.imageViewVector

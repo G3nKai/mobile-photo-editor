@@ -6,6 +6,32 @@
     android:layout_height="match_parent"
     android:background="#4B4453">
 
+    <TextView
+        android:id="@+id/textViewOrigin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/inter_bold"
+        android:text="Отменить"
+        android:textColor="#fafafa"
+        android:textSize="13sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textViewSave"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:fontFamily="@font/inter_bold"
+        android:text="Применить"
+        android:textColor="#fafafa"
+        android:textSize="13sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ImageView
         android:id="@+id/imageViewVector"
         android:layout_width="278dp"
