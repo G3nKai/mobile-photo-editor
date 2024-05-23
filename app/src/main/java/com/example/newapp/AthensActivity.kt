@@ -12,6 +12,7 @@ import android.os.Environment
 import android.view.MotionEvent
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.ViewCompat
 import com.example.newapp.databinding.ActivityAthensBinding
 import java.io.File
@@ -58,8 +59,25 @@ class AthensActivity: AppCompatActivity() {
         binding.imageView2.setOnTouchListener { _, event ->
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
+                    val pointView = when (currentPointIndex) {
+                        0 -> binding.point1
+                        1 -> binding.point2
+                        2 -> binding.point3
+                        else -> null
+                    }
+
+                    pointView?.apply {
+                        alpha = 1f
+                        visibility = View.VISIBLE
+                        setBackgroundColor(pointColors[currentPointIndex])
+
+                        val layoutParams = layoutParams as ConstraintLayout.LayoutParams
+                        layoutParams.leftMargin = event.x.toInt() - width / 2
+                        layoutParams.topMargin = event.y.toInt() - height / 2
+                        requestLayout()
+                    }
+
                     points[currentPointIndex] = Point(event.x.toInt(), event.y.toInt())
-                    showPoint(currentPointIndex)
 
                     println("Точка ${currentPointIndex + 1}: x=${event.x}, y=${event.y}")
 
@@ -70,10 +88,6 @@ class AthensActivity: AppCompatActivity() {
             }
             true
         }
-
-
-
-
     }
 
     private fun dispatchToGallery(bitmap: Bitmap): Uri {
@@ -88,21 +102,4 @@ class AthensActivity: AppCompatActivity() {
 
         return Uri.fromFile(imageFile)
     }
-
-    private fun showPoint(index: Int) {
-        val pointView = when (index) {
-            0 -> binding.point1
-            1 -> binding.point2
-            2 -> binding.point3
-            else -> null
-        }
-
-        pointView?.apply {
-            alpha = 1f
-            visibility = View.VISIBLE
-            setBackgroundColor(pointColors[index])
-        }
-    }
-
-
 }
