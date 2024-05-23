@@ -83,11 +83,12 @@
         android:id="@+id/cancleBut"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="отменить"
-        android:textColor="#EAEAEA"
-        app:layout_constraintBottom_toTopOf="@+id/imageView2"
-        app:layout_constraintEnd_toStartOf="@+id/saveBut"
-        app:layout_constraintHorizontal_bias="0.089"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/inter_bold"
+        android:text="Отменить"
+        android:textColor="#fafafa"
+        android:textSize="13sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -95,10 +96,12 @@
         android:id="@+id/saveBut"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:text="готово"
-        android:textColor="#EAEAEA"
-        app:layout_constraintBottom_toTopOf="@+id/imageView2"
+        android:fontFamily="@font/inter_bold"
+        android:text="Применить"
+        android:textColor="#fafafa"
+        android:textSize="13sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
