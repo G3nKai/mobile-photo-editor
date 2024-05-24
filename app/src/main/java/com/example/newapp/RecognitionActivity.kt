@@ -36,12 +36,13 @@ class RecognitionActivity : AppCompatActivity() {
     private lateinit var cascadeClassifier: CascadeClassifier
     private var absoluteFaceSize: Int = 0
 
-    private fun newPix(value: Int) : Int {
+    private fun newPix(value: Int): Int {
         if (value < 0) return 0
-        else if(value > 255) return 255
+        else if (value > 255) return 255
         else return value
     }
-    fun increaseContrast(bitmap: Bitmap, contrastValue : Float) : Bitmap {
+
+    fun increaseContrast(bitmap: Bitmap, contrastValue: Float): Bitmap {
         val width = bitmap.width
         val height = bitmap.height
 
@@ -49,8 +50,9 @@ class RecognitionActivity : AppCompatActivity() {
         var totalBrightness = 0.0
         for (x in 0 until width) {
             for (y in 0 until height) {
-                val pixel = bitmap.getPixel(x,y)
-                val brightness = Color.red(pixel) * 0.299 + Color.green(pixel) * 0.587 + Color.blue(pixel) * 0.114
+                val pixel = bitmap.getPixel(x, y)
+                val brightness =
+                    Color.red(pixel) * 0.299 + Color.green(pixel) * 0.587 + Color.blue(pixel) * 0.114
                 totalBrightness += brightness
             }
         }
@@ -58,13 +60,14 @@ class RecognitionActivity : AppCompatActivity() {
 
         for (x in 0 until width) {
             for (y in 0 until height) {
-                val pixel = bitmap.getPixel(x,y)
+                val pixel = bitmap.getPixel(x, y)
 
                 val currRed = Color.red(pixel)
                 val currGreen = Color.green(pixel)
                 val currBlue = Color.blue(pixel)
 
-                val contrastedRed = (currRed - avgBrightness) * contrastValue + avgBrightness //по формуле
+                val contrastedRed =
+                    (currRed - avgBrightness) * contrastValue + avgBrightness //по формуле
                 val contrastedGreen = (currGreen - avgBrightness) * contrastValue + avgBrightness
                 val contrastedBlue = (currBlue - avgBrightness) * contrastValue + avgBrightness
 
@@ -77,6 +80,7 @@ class RecognitionActivity : AppCompatActivity() {
         }
         return newContrastBitmap
     }
+
     fun getMosaicColor(bitmap: Bitmap, startX: Int, startY: Int, mosaicSize: Int): Int {
         val width = bitmap.width
         val height = bitmap.height
@@ -110,12 +114,12 @@ class RecognitionActivity : AppCompatActivity() {
         val height = bitmap.height
 
         val mosaicBitmap = Bitmap.createBitmap(width, height, bitmap.config)
-        for (x in 0 until width step mosaicSize){
-            for (y in 0 until height step mosaicSize){
+        for (x in 0 until width step mosaicSize) {
+            for (y in 0 until height step mosaicSize) {
 
                 val mosaicColor = getMosaicColor(bitmap, x, y, mosaicSize)
 
-                for (i in x until minOf(x + mosaicSize, width)){
+                for (i in x until minOf(x + mosaicSize, width)) {
                     for (j in y until minOf(y + mosaicSize, height)) {
                         mosaicBitmap.setPixel(i, j, mosaicColor)
                     }
@@ -145,6 +149,7 @@ class RecognitionActivity : AppCompatActivity() {
         }
         return negativeBitmap
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityRecognitionBinding.inflate(layoutInflater)
@@ -167,7 +172,7 @@ class RecognitionActivity : AppCompatActivity() {
 
         //size of face
         val heightofimg = mGray.rows()
-        if( Math.round(heightofimg * 0.2f) > 0){
+        if (Math.round(heightofimg * 0.2f) > 0) {
             absoluteFaceSize = Math.round(heightofimg * 0.2f)
         }
 
@@ -197,7 +202,7 @@ class RecognitionActivity : AppCompatActivity() {
 
         // detecting feces after click
         binding.recButt.setOnClickListener {
-             modifiedBitmap = detectFaces(0)
+            modifiedBitmap = detectFaces(0)
             binding.imageViewFilter.setImageBitmap(modifiedBitmap)
         }
 
@@ -230,10 +235,10 @@ class RecognitionActivity : AppCompatActivity() {
     }
 
     //function for detecting faces
-    private fun detectFaces(flag:Int): Bitmap {
+    private fun detectFaces(flag: Int): Bitmap {
         val faceDetections = MatOfRect()
         cascadeClassifier.detectMultiScale(
-            mGray, faceDetections, 1.2, 2 , 2,
+            mGray, faceDetections, 1.2, 2, 2,
             Size(absoluteFaceSize.toDouble(), absoluteFaceSize.toDouble()), Size()
         )
 
@@ -248,7 +253,7 @@ class RecognitionActivity : AppCompatActivity() {
             strokeWidth = 5f
         }
 
-        if(flag == 0) {
+        if (flag == 0) {
             for (rect in facesArray) {
                 val left = rect.x
                 val top = rect.y
@@ -265,31 +270,32 @@ class RecognitionActivity : AppCompatActivity() {
         }
 
         for (rect in facesArray) {
-             val faceBitmap = Bitmap.createBitmap(
-                 mutableBitmap,
-                    rect.x.toInt(),
-                    rect.y.toInt(),
-                    rect.width.toInt(),
-                    rect.height.toInt()
-                )
-            if(flag == 1) {
+            val faceBitmap = Bitmap.createBitmap(
+                mutableBitmap,
+                rect.x.toInt(),
+                rect.y.toInt(),
+                rect.width.toInt(),
+                rect.height.toInt()
+            )
+            if (flag == 1) {
                 val negativeFaceBitmap = applyNegativeEffect(faceBitmap)
                 val canvas = Canvas(mutableBitmap)
                 canvas.drawBitmap(negativeFaceBitmap, rect.x.toFloat(), rect.y.toFloat(), null)
             }
-            if(flag == 2){
-                val MosaicFaceBitmap = applyMosaicEffect(faceBitmap,25)
+            if (flag == 2) {
+                val MosaicFaceBitmap = applyMosaicEffect(faceBitmap, 25)
                 val canvas = Canvas(mutableBitmap)
                 canvas.drawBitmap(MosaicFaceBitmap, rect.x.toFloat(), rect.y.toFloat(), null)
             }
-            if(flag == 3){
-                val ContrastFaceBitmap = increaseContrast(faceBitmap,45f)
+            if (flag == 3) {
+                val ContrastFaceBitmap = increaseContrast(faceBitmap, 45f)
                 val canvas = Canvas(mutableBitmap)
                 canvas.drawBitmap(ContrastFaceBitmap, rect.x.toFloat(), rect.y.toFloat(), null)
             }
         }
         return mutableBitmap
     }
+
     private fun dispatchToGallery(bitmap: Bitmap): Uri {
         val imagesDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         val imageFile = File(imagesDir, "scaled_image.png")
