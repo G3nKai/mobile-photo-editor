@@ -20,29 +20,61 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.NewApp"
         tools:targetApi="31">
+
         <activity
             android:name=".SecondActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
         <activity
             android:name=".MainActivity"
-            android:exported="true">
+            android:exported="true"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ThirdActivity"/>
-        <activity android:name=".RotateActivity"/>
-        <activity android:name=".ScalingActivity"/>
-        <activity android:name=".FiltersActivity"/>
-        <activity android:name=".RecognitionActivity"/>
-        <activity android:name=".VectorActivity"/>
-        <activity android:name=".RetouchingActivity"/>
-        <activity android:name=".MaskingActivity"/>
-        <activity android:name=".AthensActivity"/>
-        <activity android:name=".CubeActivity"/>
 
+        <activity
+            android:name=".ThirdActivity"
+            android:screenOrientation="portrait"/>
+
+        <activity
+            android:name=".RotateActivity"
+            android:screenOrientation="portrait"/>
+
+        <activity
+            android:name=".ScalingActivity"
+            android:screenOrientation="portrait"/>
+
+        <activity
+            android:name=".FiltersActivity"
+            android:screenOrientation="portrait"/>
+
+        <activity
+            android:name=".RecognitionActivity"
+            android:screenOrientation="portrait"/>
+
+        <activity
+            android:name=".VectorActivity"
+            android:screenOrientation="portrait"/>
+
+        <activity
+            android:name=".RetouchingActivity"
+            android:screenOrientation="portrait"/>
+
+        <activity
+            android:name=".MaskingActivity"
+            android:screenOrientation="portrait"/>
+
+        <activity
+            android:name=".AthensActivity"
+            android:screenOrientation="portrait"/>
+
+        <activity
+            android:name=".CubeActivity"
+            android:screenOrientation="portrait"/>
 
         <meta-data
             android:name="preloaded_fonts"
