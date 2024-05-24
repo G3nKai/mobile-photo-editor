@@ -14,9 +14,5 @@ class CubeActivity: AppCompatActivity() {
         binding = ActivityCubeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val byteArray = intent.getByteArrayExtra("imageByteArray")
-        val bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray!!.size)
-
-        binding.imageView2.setImageBitmap(bitmap)
     }
 }
