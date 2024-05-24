@@ -14,14 +14,19 @@ import kotlin.math.cos
 import kotlin.math.sin
 class CubeView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0):
-    View(context,attrs,defStyleAttr){
+    View(context,attrs,defStyleAttr)
+{
         data class Face(val indices: List<Int>, val color: Int, val averageDepth: Float)
+    private var angelX = -60f
+    private var angelY = 150f
+    private var lastTouchX = 0f
+    private var lastTouchY = 0f
 
-        private val paint = Paint().apply {
-            style = Paint.Style.FILL
-        }
+    private val paint = Paint().apply {
+                style = Paint.Style.FILL
+    }
 
-        private val points = arrayOf(
+    private val points = arrayOf(
             floatArrayOf(-1f, -1f, -1f),
             floatArrayOf(1f, -1f, -1f),
             floatArrayOf(1f, 1f, -1f),
@@ -30,29 +35,22 @@ class CubeView @JvmOverloads constructor(
             floatArrayOf(1f, -1f, 1f),
             floatArrayOf(1f, 1f, 1f),
             floatArrayOf(-1f, 1f, 1f)
-        )
+    )
 
-        val projectedPoints = Array(8){FloatArray(2)}
+    val projectedPoints = Array(8){FloatArray(2)}
 
-        val SideColors = arrayOf(
+    val SideColors = arrayOf(
             0xFFFF0000.toInt(),
             0xFF00FF00.toInt(),
             0xFF0000FF.toInt(),
             0xFFFFFF00.toInt(),
             0xFFFF00FF.toInt(),
             0xFF00FFFF.toInt()
-        )
-
-        var angelX = -60f
-        var angelY = 150f
-        var lastTouchX = 0f
-        var lastTouch = 0f
-
-
-        private fun averageDepth(transformedPoints: Array<FloatArray>, indices: List<Int>): Float {
-            return indices.map { transformedPoints[it][2] }.average().toFloat()
-        }
-        override fun onDraw(canvas: Canvas){
+    )
+    private fun averageDepth(transformedPoints: Array<FloatArray>, indices: List<Int>): Float {
+        return indices.map { transformedPoints[it][2] }.average().toFloat()
+    }
+    override fun onDraw(canvas: Canvas){
             super.onDraw(canvas)
             val width = width.toFloat()
             val height = height.toFloat()
@@ -109,4 +107,5 @@ class CubeView @JvmOverloads constructor(
             paint.style = Paint.Style.FILL
             canvas.drawPath(path, paint)
         }
+
     }
