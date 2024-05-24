@@ -43,11 +43,15 @@ class CubeView @JvmOverloads constructor(
             0xFF00FFFF.toInt()
         )
 
-        var angelX = 0f
-        var angelY = 0f
+        var angelX = -60f
+        var angelY = 150f
         var lastTouchX = 0f
         var lastTouch = 0f
 
+
+        private fun averageDepth(transformedPoints: Array<FloatArray>, indices: List<Int>): Float {
+            return indices.map { transformedPoints[it][2] }.average().toFloat()
+        }
         override fun onDraw(canvas: Canvas){
             super.onDraw(canvas)
             val width = width.toFloat()
@@ -70,16 +74,15 @@ class CubeView @JvmOverloads constructor(
                 val newX = tempX
                 val newY = y * cos(angelX) - tempZ * sin(angelX)
                 val newZ = y * sin(angelX) + tempZ * cos(angelX)
+                transPoints[i][0] = newX
+                transPoints[i][1] = newY
+                transPoints[i][2] = newZ
 
-                transPoints[i][0] = width / 2 + newX * size
-                transPoints[i][1] = height / 2 - newY * size
+                projectedPoints[i][0] = width / 2 + newX * size
+                projectedPoints[i][1] = height / 2 - newY * size
             }
 
-            fun averageDepth(transformedPoints: Array<FloatArray>, indices: List<Int>): Float {
-                return indices.map { transformedPoints[it][2] }.average().toFloat()
-            }
-
-            val faces = listOf(
+            val Sides = listOf(
                 Face(listOf(0, 1, 2, 3), SideColors[0], averageDepth(transPoints, listOf(0, 1, 2, 3))),
                 Face(listOf(4, 5, 6, 7), SideColors[1], averageDepth(transPoints, listOf(4, 5, 6, 7))),
                 Face(listOf(0, 1, 5, 4), SideColors[2], averageDepth(transPoints, listOf(0, 1, 5, 4))),
@@ -88,6 +91,22 @@ class CubeView @JvmOverloads constructor(
                 Face(listOf(1, 2, 6, 5), SideColors[5], averageDepth(transPoints, listOf(1, 2, 6, 5)))
             )
 
-            val sortedFaces = faces.sortedByDescending{ it.averageDepth}
+            val sortedSides = Sides.sortedByDescending{ it.averageDepth}
+
+            for(side in sortedSides){
+                drawSide(canvas,side.indices[0], side.indices[1],side.indices[2],side.indices[3], side.color)
+            }
+        }
+        private fun drawSide(canvas: Canvas, i1: Int, i2: Int, i3: Int, i4: Int, color: Int) {
+            val path = Path()
+            path.moveTo(projectedPoints[i1][0], projectedPoints[i1][1])
+            path.lineTo(projectedPoints[i2][0], projectedPoints[i2][1])
+            path.lineTo(projectedPoints[i3][0], projectedPoints[i3][1])
+            path.lineTo(projectedPoints[i4][0], projectedPoints[i4][1])
+            path.close()
+
+            paint.color = color
+            paint.style = Paint.Style.FILL
+            canvas.drawPath(path, paint)
         }
     }
