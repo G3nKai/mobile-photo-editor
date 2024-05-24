@@ -53,11 +53,13 @@ class RotateActivity : AppCompatActivity() {
 
         return rotatedBitmap
     }
-    fun rotate_photo(bitmap:Bitmap, flag:Boolean): Bitmap?{
+
+    fun rotate_photo(bitmap: Bitmap, flag: Boolean): Bitmap? {
 
         val width = bitmap.width
         val height = bitmap.height
-        var modifiedBitmap: Bitmap = Bitmap.createBitmap(bitmap.height, bitmap.width, Bitmap.Config.ARGB_8888)
+        var modifiedBitmap: Bitmap =
+            Bitmap.createBitmap(bitmap.height, bitmap.width, Bitmap.Config.ARGB_8888)
 
         if (flag) {
             for (x in 0 until width) {
@@ -69,9 +71,8 @@ class RotateActivity : AppCompatActivity() {
 
                 }
             }
-        }
-        else{
-            for (x in width-1 downTo  0) {
+        } else {
+            for (x in width - 1 downTo 0) {
 
                 for (y in 0 until height) {
 
@@ -98,9 +99,9 @@ class RotateActivity : AppCompatActivity() {
 
         val seekBar = binding.seekBar
         val txtDeg = binding.degree
-        var Degree:Int = 0
+        var Degree: Int = 0
 
-        seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
+        seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 txtDeg.setText("${progress}deg")
                 Degree = progress
@@ -130,31 +131,32 @@ class RotateActivity : AppCompatActivity() {
             binding.imageView2.setImageBitmap(modifiedBit)
         }
 
-        val rotateTo90:Button = binding.Rotate90
+        val rotateTo90: Button = binding.Rotate90
         val rotateTo270 = binding.Rotate270
-        rotateTo90.setOnClickListener{
+        rotateTo90.setOnClickListener {
 
             val drawable = binding.imageView2.drawable
 
             if (drawable is BitmapDrawable) {
                 val bitmap = drawable.bitmap
-                modifiedBit = rotate_photo(bitmap,true)
+                modifiedBit = rotate_photo(bitmap, true)
             }
             binding.imageView2.setImageBitmap(modifiedBit)
         }
 
-        rotateTo270.setOnClickListener{
+        rotateTo270.setOnClickListener {
             val drawable = binding.imageView2.drawable
 
             if (drawable is BitmapDrawable) {
                 val bitmap = drawable.bitmap
-                modifiedBit = rotate_photo(bitmap,false)
+                modifiedBit = rotate_photo(bitmap, false)
             }
             binding.imageView2.setImageBitmap(modifiedBit)
         }
 
         binding.saveBut.setOnClickListener {
-            val rotatedUri = modifiedBit?.let { dispatchToGallery(it) } ?: dispatchToGallery(originalBitmap)
+            val rotatedUri =
+                modifiedBit?.let { dispatchToGallery(it) } ?: dispatchToGallery(originalBitmap)
 
             val intent = Intent(this, ThirdActivity::class.java)
             intent.putExtra("imageSource", "gallery")
@@ -162,7 +164,7 @@ class RotateActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        binding.cancleBut.setOnClickListener{
+        binding.cancleBut.setOnClickListener {
             originalBitmap = backUpBitmap
             modifiedBit = backUpBitmap
             binding.imageView2.setImageBitmap(originalBitmap)
