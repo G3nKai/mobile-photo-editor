@@ -108,4 +108,29 @@ class CubeView @JvmOverloads constructor(
             canvas.drawPath(path, paint)
         }
 
+        override fun onTouchEvent(event: MotionEvent): Boolean {
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    lastTouchX = event.x
+                    lastTouchY = event.y
+                }
+                MotionEvent.ACTION_MOVE -> {
+
+                    val dx = event.x - lastTouchX
+                    val dy = event.y - lastTouchY
+
+
+                    angelY+= dx * 0.01f
+                    angelX += dy * 0.01f
+
+
+                    lastTouchX = event.x
+                    lastTouchY = event.y
+
+
+                    invalidate()
+                }
+            }
+            return true
+        }
     }
