@@ -1,32 +1,27 @@
 package com.example.newapp
 
+import android.annotation.SuppressLint
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Color
-import android.graphics.Point
+import android.graphics.*
 import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.view.MotionEvent
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.view.ViewCompat
 import com.example.newapp.databinding.ActivityAthensBinding
 import java.io.File
 import java.io.FileOutputStream
 
-class AthensActivity: AppCompatActivity() {
+class AthensActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAthensBinding
     private lateinit var originalBitmap: Bitmap
-    private lateinit var backUpBitmap: Bitmap
-    private lateinit var points: Array<Point?>
+    private lateinit var mutableBitmap: Bitmap
+    private lateinit var points: Array<PointF?>
     private var currentPointIndex = 0
-    private var pointColors = arrayOf(Color.RED, Color.BLUE, Color.GREEN)
+    private val pointColors = arrayOf(Color.RED, Color.GREEN, Color.BLUE)
 
-
+    @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAthensBinding.inflate(layoutInflater)
@@ -35,14 +30,14 @@ class AthensActivity: AppCompatActivity() {
         points = arrayOfNulls(3)
 
         val imageUri = Uri.parse(intent.getStringExtra("imageUri"))
-        binding.imageView2.setImageURI(imageUri)
+        val inputStream = contentResolver.openInputStream(imageUri)
+        originalBitmap = BitmapFactory.decodeStream(inputStream)
+        inputStream?.close()
 
-        originalBitmap = BitmapFactory.decodeStream(contentResolver.openInputStream(imageUri))
-        binding.imageView2.setImageBitmap(originalBitmap)
+        mutableBitmap = originalBitmap.copy(Bitmap.Config.ARGB_8888, true)
+        binding.imageViewAthens.setImageBitmap(mutableBitmap)
 
-        backUpBitmap = originalBitmap.copy(originalBitmap.config, true)
-
-        binding.accept.setOnClickListener {
+        binding.textViewSave.setOnClickListener {
             val scaledUri = dispatchToGallery(originalBitmap)
 
             val intent = Intent(this, ThirdActivity::class.java)
@@ -51,53 +46,66 @@ class AthensActivity: AppCompatActivity() {
             startActivity(intent)
         }
 
-        binding.cancel.setOnClickListener {
-            originalBitmap = backUpBitmap
-            binding.imageView2.setImageBitmap(originalBitmap)
+        binding.textViewOrigin.setOnClickListener {
+            mutableBitmap = originalBitmap.copy(Bitmap.Config.ARGB_8888, true)
+            binding.imageViewAthens.setImageBitmap(mutableBitmap)
+            points = arrayOfNulls(3)
+            currentPointIndex = 0
         }
 
-        binding.imageView2.setOnTouchListener { _, event ->
-            when (event.action) {
-                MotionEvent.ACTION_DOWN -> {
-                    val pointView = when (currentPointIndex) {
-                        0 -> binding.point1
-                        1 -> binding.point2
-                        2 -> binding.point3
-                        else -> null
-                    }
-
-                    pointView?.apply {
-                        alpha = 1f
-                        visibility = View.VISIBLE
-                        setBackgroundColor(pointColors[currentPointIndex])
-
-                        val layoutParams = layoutParams as ConstraintLayout.LayoutParams
-                        layoutParams.leftMargin = event.x.toInt() - width / 2
-                        layoutParams.topMargin = event.y.toInt() - height / 2
-                        requestLayout()
-                    }
-
-                    points[currentPointIndex] = Point(event.x.toInt(), event.y.toInt())
-
-                    println("Точка ${currentPointIndex + 1}: x=${event.x}, y=${event.y}")
-
-                    currentPointIndex++
-                    if (currentPointIndex >= points.size)
-                        currentPointIndex = 0
-                }
-            }
-            true
+        binding.imageViewAthens.setOnTouchListener { _, event ->
+            if (event.action == MotionEvent.ACTION_DOWN && currentPointIndex < 3) {
+                touchPoint(event)
+                true
+            } else
+                false
         }
+    }
+
+    private fun touchPoint(event: MotionEvent) {
+        val imageView = binding.imageViewAthens
+
+        val drawable = imageView.drawable ?: return
+
+        val matrix = Matrix()
+        imageView.imageMatrix.invert(matrix)
+
+        val points = floatArrayOf(event.x, event.y)
+        matrix.mapPoints(points)
+
+        val touchX = points[0]
+        val touchY = points[1]
+
+        val imageWidth = drawable.intrinsicWidth
+        val imageHeight = drawable.intrinsicHeight
+
+        if (touchX >= 0 && touchX <= imageWidth && touchY >= 0 && touchY <= imageHeight) {
+            addPoint(touchX, touchY)
+        }
+    }
+
+    private fun addPoint(x: Float, y: Float) {
+        points[currentPointIndex] = PointF(x, y)
+        drawPoint(x, y, pointColors[currentPointIndex])
+        currentPointIndex++
+    }
+
+    private fun drawPoint(x: Float, y: Float, color: Int) {
+        val canvas = Canvas(mutableBitmap)
+        val paint = Paint().apply {
+            this.color = color
+            style = Paint.Style.FILL
+        }
+        canvas.drawCircle(x, y, 20f, paint)
+        binding.imageViewAthens.invalidate()
     }
 
     private fun dispatchToGallery(bitmap: Bitmap): Uri {
         val imagesDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         val imageFile = File(imagesDir, "scaled_image.png")
-
         val outputStream = FileOutputStream(imageFile)
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
         outputStream.close()
-
         MediaScannerConnection.scanFile(this, arrayOf(imageFile.absolutePath), null, null)
 
         return Uri.fromFile(imageFile)
