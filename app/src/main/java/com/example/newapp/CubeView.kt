@@ -54,5 +54,24 @@ class CubeView @JvmOverloads constructor(
             val size = Math.min(width,height) / 4
 
             canvas.drawColor(Color.BLACK)
+
+
+            //обновление вращения точек
+            val transPoints = Array(8) {FloatArray(3)}
+
+            for(i in points.indices){
+                val x = points[i][0]
+                val y = points[i][1]
+                val z = points[i][2]
+
+                val tempX = x * cos(angelY) - z * sin(angelY)
+                val tempZ = x * sin(angelY) + z * cos(angelY)
+                val newX = tempX
+                val newY = y * cos(angelX) - tempZ * sin(angelX)
+                val newZ = y * sin(angelX) + tempZ * cos(angelX)
+
+                transPoints[i][0] = width / 2 + newX * size
+                transPoints[i][1] = height / 2 - newY * size
+            }
         }
     }
