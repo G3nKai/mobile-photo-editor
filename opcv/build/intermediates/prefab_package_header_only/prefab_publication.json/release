@@ -1,0 +1,17 @@
+{
+  "installationFolder": "D:\\app_dev\\mobile-photo-editor\\opcv\\build\\intermediates\\prefab_package\\release\\prefab",
+  "gradlePath": ":opcv",
+  "packageInfo": {
+    "packageName": "opcv",
+    "packageSchemaVersion": 2,
+    "packageDependencies": [],
+    "modules": [
+      {
+        "moduleName": "opencv_jni_shared",
+        "moduleHeaders": "D:\\app_dev\\mobile-photo-editor\\opcv\\native\\jni\\include",
+        "moduleExportLibraries": [],
+        "abis": []
+      }
+    ]
+  }
+}
