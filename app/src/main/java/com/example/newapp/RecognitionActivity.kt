@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Rect
 import android.net.Uri
@@ -32,6 +33,114 @@ class RecognitionActivity : AppCompatActivity() {
     private lateinit var cascadeClassifier: CascadeClassifier
     private var absoluteFaceSize: Int = 0
 
+    private fun newPix(value: Int) : Int {
+        if (value < 0) return 0
+        else if(value > 255) return 255
+        else return value
+    }
+    fun increaseContrast(bitmap: Bitmap, contrastValue : Float) : Bitmap {
+        val width = bitmap.width
+        val height = bitmap.height
+
+        val newContrastBitmap = Bitmap.createBitmap(width, height, bitmap.config)
+        var totalBrightness = 0.0
+        for (x in 0 until width) {
+            for (y in 0 until height) {
+                val pixel = bitmap.getPixel(x,y)
+                val brightness = Color.red(pixel) * 0.299 + Color.green(pixel) * 0.587 + Color.blue(pixel) * 0.114
+                totalBrightness += brightness
+            }
+        }
+        var avgBrightness = totalBrightness / (width * height)
+
+        for (x in 0 until width) {
+            for (y in 0 until height) {
+                val pixel = bitmap.getPixel(x,y)
+
+                val currRed = Color.red(pixel)
+                val currGreen = Color.green(pixel)
+                val currBlue = Color.blue(pixel)
+
+                val contrastedRed = (currRed - avgBrightness) * contrastValue + avgBrightness //по формуле
+                val contrastedGreen = (currGreen - avgBrightness) * contrastValue + avgBrightness
+                val contrastedBlue = (currBlue - avgBrightness) * contrastValue + avgBrightness
+
+                val resultRed = newPix(contrastedRed.toInt())
+                val resultGreen = newPix(contrastedGreen.toInt())
+                val resultBlue = newPix(contrastedBlue.toInt())
+
+                newContrastBitmap.setPixel(x, y, Color.rgb(resultRed, resultGreen, resultBlue))
+            }
+        }
+        return newContrastBitmap
+    }
+    fun getMosaicColor(bitmap: Bitmap, startX: Int, startY: Int, mosaicSize: Int): Int {
+        val width = bitmap.width
+        val height = bitmap.height
+
+        var redSum = 0
+        var greenSum = 0
+        var blueSum = 0
+
+        val numberOfPixels = mosaicSize * mosaicSize // Всего пикселей в блоке
+
+        for (x in startX until startX + mosaicSize) {
+            for (y in startY until startY + mosaicSize) {
+                if (x < width && y < height) { // Проверяем, чтобы не выйти за границы изображения
+                    val pixel = bitmap.getPixel(x, y)
+                    redSum += Color.red(pixel)
+                    greenSum += Color.green(pixel)
+                    blueSum += Color.blue(pixel)
+                }
+            }
+        }
+
+        val avgRed = redSum / numberOfPixels
+        val avgGreen = greenSum / numberOfPixels
+        val avgBlue = blueSum / numberOfPixels
+        return Color.rgb(avgRed, avgGreen, avgBlue)
+    }
+
+
+    fun applyMosaicEffect(bitmap: Bitmap, mosaicSize: Int): Bitmap {
+        val width = bitmap.width
+        val height = bitmap.height
+
+        val mosaicBitmap = Bitmap.createBitmap(width, height, bitmap.config)
+        for (x in 0 until width step mosaicSize){
+            for (y in 0 until height step mosaicSize){
+
+                val mosaicColor = getMosaicColor(bitmap, x, y, mosaicSize)
+
+                for (i in x until minOf(x + mosaicSize, width)){
+                    for (j in y until minOf(y + mosaicSize, height)) {
+                        mosaicBitmap.setPixel(i, j, mosaicColor)
+                    }
+                }
+            }
+        }
+        return mosaicBitmap
+    }
+    private fun applyNegativeEffect(bitmap: Bitmap): Bitmap {
+        val width = bitmap.width
+        val height = bitmap.height
+
+        val negativeBitmap = Bitmap.createBitmap(width, height, bitmap.config)
+
+        for (x in 0 until width) {
+            for (y in 0 until height) {
+                val pixel = bitmap.getPixel(x, y)
+
+                val red = 255 - Color.red(pixel)
+                val green = 255 - Color.green(pixel)
+                val blue = 255 - Color.blue(pixel)
+
+                val negativePixel = Color.rgb(red, green, blue)
+                negativeBitmap.setPixel(x, y, negativePixel)
+            }
+        }
+        return negativeBitmap
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityRecognitionBinding.inflate(layoutInflater)
@@ -44,9 +153,9 @@ class RecognitionActivity : AppCompatActivity() {
         }
 
         val imageUri = Uri.parse(intent.getStringExtra("imageUri"))
-        binding.imageView2.setImageURI(imageUri)
+        binding.imageViewFilter.setImageURI(imageUri)
         originalBitmap = BitmapFactory.decodeStream(contentResolver.openInputStream(imageUri))
-        binding.imageView2.setImageBitmap(originalBitmap)
+        binding.imageViewFilter.setImageBitmap(originalBitmap)
 
         mRgb = Mat()
         mGray = Mat()
@@ -83,12 +192,21 @@ class RecognitionActivity : AppCompatActivity() {
 
         // detecting feces after click
         binding.recButt.setOnClickListener {
-            detectFaces()
+            detectFaces(0)
+        }
+        binding.applyNego.setOnClickListener {
+            detectFaces(1)
+        }
+        binding.applyMos.setOnClickListener {
+            detectFaces(2)
+        }
+        binding.applyCont.setOnClickListener {
+            detectFaces(3)
         }
     }
 
     //function for detecting faces
-    private fun detectFaces() {
+    private fun detectFaces(flag:Int) {
         val faceDetections = MatOfRect()
         cascadeClassifier.detectMultiScale(
             mGray, faceDetections, 1.2, 2 , 2,
@@ -106,14 +224,47 @@ class RecognitionActivity : AppCompatActivity() {
             strokeWidth = 5f
         }
 
-        for (rect in facesArray) {
-            val left = rect.x
-            val top = rect.y
-            val right = rect.x + rect.width
-            val bottom = rect.y + rect.height
-            canvas.drawRect(left.toFloat(), top.toFloat(), right.toFloat(), bottom.toFloat(), paint)
+        if(flag == 0) {
+            for (rect in facesArray) {
+                val left = rect.x
+                val top = rect.y
+                val right = rect.x + rect.width
+                val bottom = rect.y + rect.height
+                canvas.drawRect(
+                    left.toFloat(),
+                    top.toFloat(),
+                    right.toFloat(),
+                    bottom.toFloat(),
+                    paint
+                )
+            }
         }
 
-        binding.imageView2.setImageBitmap(mutableBitmap)
+        for (rect in facesArray) {
+             val faceBitmap = Bitmap.createBitmap(
+                 mutableBitmap,
+                    rect.x.toInt(),
+                    rect.y.toInt(),
+                    rect.width.toInt(),
+                    rect.height.toInt()
+                )
+            if(flag == 1) {
+                val negativeFaceBitmap = applyNegativeEffect(faceBitmap)
+                val canvas = Canvas(mutableBitmap)
+                canvas.drawBitmap(negativeFaceBitmap, rect.x.toFloat(), rect.y.toFloat(), null)
+            }
+            if(flag == 2){
+                val MosaicFaceBitmap = applyMosaicEffect(faceBitmap,25)
+                val canvas = Canvas(mutableBitmap)
+                canvas.drawBitmap(MosaicFaceBitmap, rect.x.toFloat(), rect.y.toFloat(), null)
+            }
+            if(flag == 3){
+                val ContrastFaceBitmap = increaseContrast(faceBitmap,45f)
+                val canvas = Canvas(mutableBitmap)
+                canvas.drawBitmap(ContrastFaceBitmap, rect.x.toFloat(), rect.y.toFloat(), null)
+            }
+        }
+
+        binding.imageViewFilter.setImageBitmap(mutableBitmap)
     }
 }
