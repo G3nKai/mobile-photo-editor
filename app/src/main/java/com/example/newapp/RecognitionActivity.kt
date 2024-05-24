@@ -1,14 +1,17 @@
 package com.example.newapp
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Rect
+import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.example.newapp.databinding.ActivityRecognitionBinding
@@ -121,6 +124,7 @@ class RecognitionActivity : AppCompatActivity() {
         }
         return mosaicBitmap
     }
+
     private fun applyNegativeEffect(bitmap: Bitmap): Bitmap {
         val width = bitmap.width
         val height = bitmap.height
@@ -155,6 +159,7 @@ class RecognitionActivity : AppCompatActivity() {
         val imageUri = Uri.parse(intent.getStringExtra("imageUri"))
         binding.imageViewFilter.setImageURI(imageUri)
         originalBitmap = BitmapFactory.decodeStream(contentResolver.openInputStream(imageUri))
+        var modifiedBitmap = originalBitmap
         binding.imageViewFilter.setImageBitmap(originalBitmap)
 
         mRgb = Mat()
@@ -192,21 +197,40 @@ class RecognitionActivity : AppCompatActivity() {
 
         // detecting feces after click
         binding.recButt.setOnClickListener {
-            detectFaces(0)
+             modifiedBitmap = detectFaces(0)
+            binding.imageViewFilter.setImageBitmap(modifiedBitmap)
         }
+
         binding.applyNego.setOnClickListener {
-            detectFaces(1)
+            modifiedBitmap = detectFaces(1)
+            binding.imageViewFilter.setImageBitmap(modifiedBitmap)
         }
+
         binding.applyMos.setOnClickListener {
-            detectFaces(2)
+            modifiedBitmap = detectFaces(2)
+            binding.imageViewFilter.setImageBitmap(modifiedBitmap)
         }
+
         binding.applyCont.setOnClickListener {
-            detectFaces(3)
+            modifiedBitmap = detectFaces(3)
+            binding.imageViewFilter.setImageBitmap(modifiedBitmap)
+        }
+
+        binding.textViewOrigin.setOnClickListener {
+            binding.imageViewFilter.setImageBitmap(originalBitmap)
+        }
+
+        binding.textViewSave.setOnClickListener {
+            val scaledUri = dispatchToGallery(modifiedBitmap!!)
+            val intent = Intent(this, ThirdActivity::class.java)
+            intent.putExtra("imageSource", "gallery")
+            intent.putExtra("imageUri", scaledUri.toString())
+            startActivity(intent)
         }
     }
 
     //function for detecting faces
-    private fun detectFaces(flag:Int) {
+    private fun detectFaces(flag:Int): Bitmap {
         val faceDetections = MatOfRect()
         cascadeClassifier.detectMultiScale(
             mGray, faceDetections, 1.2, 2 , 2,
@@ -264,7 +288,18 @@ class RecognitionActivity : AppCompatActivity() {
                 canvas.drawBitmap(ContrastFaceBitmap, rect.x.toFloat(), rect.y.toFloat(), null)
             }
         }
+        return mutableBitmap
+    }
+    private fun dispatchToGallery(bitmap: Bitmap): Uri {
+        val imagesDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        val imageFile = File(imagesDir, "scaled_image.png")
 
-        binding.imageViewFilter.setImageBitmap(mutableBitmap)
+        val outputStream = FileOutputStream(imageFile)
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+        outputStream.close()
+
+        MediaScannerConnection.scanFile(this, arrayOf(imageFile.absolutePath), null, null)
+
+        return Uri.fromFile(imageFile)
     }
 }
