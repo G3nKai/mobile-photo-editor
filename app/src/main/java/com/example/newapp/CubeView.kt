@@ -15,6 +15,7 @@ import kotlin.math.sin
 class CubeView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0):
     View(context,attrs,defStyleAttr){
+        data class Face(val indices: List<Int>, val color: Int, val averageDepth: Float)
 
         private val paint = Paint().apply {
             style = Paint.Style.FILL
@@ -73,5 +74,20 @@ class CubeView @JvmOverloads constructor(
                 transPoints[i][0] = width / 2 + newX * size
                 transPoints[i][1] = height / 2 - newY * size
             }
+
+            fun averageDepth(transformedPoints: Array<FloatArray>, indices: List<Int>): Float {
+                return indices.map { transformedPoints[it][2] }.average().toFloat()
+            }
+
+            val faces = listOf(
+                Face(listOf(0, 1, 2, 3), SideColors[0], averageDepth(transPoints, listOf(0, 1, 2, 3))),
+                Face(listOf(4, 5, 6, 7), SideColors[1], averageDepth(transPoints, listOf(4, 5, 6, 7))),
+                Face(listOf(0, 1, 5, 4), SideColors[2], averageDepth(transPoints, listOf(0, 1, 5, 4))),
+                Face(listOf(2, 3, 7, 6), SideColors[3], averageDepth(transPoints, listOf(2, 3, 7, 6))),
+                Face(listOf(0, 3, 7, 4), SideColors[4], averageDepth(transPoints, listOf(0, 3, 7, 4))),
+                Face(listOf(1, 2, 6, 5), SideColors[5], averageDepth(transPoints, listOf(1, 2, 6, 5)))
+            )
+
+            val sortedFaces = faces.sortedByDescending{ it.averageDepth}
         }
     }
