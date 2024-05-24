@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#4B4453"
+    android:background="@color/darkGreyNum2"
     tools:context=".SecondActivity">
 
     <TextView
@@ -25,7 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="100dp"
-        android:backgroundTint="#845EC2"
+        android:backgroundTint="@color/purpleNum1"
         android:text="Загрузить из галереи"
         android:textStyle="bold" />
 
@@ -35,7 +35,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="20dp"
-        android:backgroundTint="#845EC2"
+        android:backgroundTint="@color/purpleNum1"
         android:text="Сделать снимок"
         android:textStyle="bold" />
 
