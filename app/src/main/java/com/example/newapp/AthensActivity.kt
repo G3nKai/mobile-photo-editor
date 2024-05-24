@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.view.MotionEvent
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.newapp.databinding.ActivityAthensBinding
 import java.io.File
@@ -18,6 +19,8 @@ class AthensActivity : AppCompatActivity() {
     private lateinit var originalBitmap: Bitmap
     private lateinit var mutableBitmap: Bitmap
     private lateinit var points: Array<PointF?>
+    private lateinit var pointsStart: Array<PointF?>
+    private lateinit var pointsEnd: Array<PointF?>
     private var currentPointIndex = 0
     private val pointColors = arrayOf(Color.RED, Color.GREEN, Color.BLUE)
 
@@ -28,6 +31,8 @@ class AthensActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         points = arrayOfNulls(3)
+        pointsStart = arrayOfNulls(3)
+        pointsEnd = arrayOfNulls(3)
 
         val imageUri = Uri.parse(intent.getStringExtra("imageUri"))
         val inputStream = contentResolver.openInputStream(imageUri)
@@ -50,6 +55,8 @@ class AthensActivity : AppCompatActivity() {
             mutableBitmap = originalBitmap.copy(Bitmap.Config.ARGB_8888, true)
             binding.imageViewAthens.setImageBitmap(mutableBitmap)
             points = arrayOfNulls(3)
+            pointsStart = arrayOfNulls(3)
+            pointsEnd = arrayOfNulls(3)
             currentPointIndex = 0
         }
 
@@ -60,6 +67,25 @@ class AthensActivity : AppCompatActivity() {
             } else
                 false
         }
+
+        binding.athenesStart.setOnClickListener {
+            pointsStart = points.copyOf()
+            mutableBitmap = originalBitmap.copy(Bitmap.Config.ARGB_8888, true)
+            binding.imageViewAthens.setImageBitmap(mutableBitmap)
+            points = arrayOfNulls(3)
+            currentPointIndex = 0
+        }
+
+        binding.athenesEnd.setOnClickListener {
+            if (pointsStart.any { it == null }) {
+                Toast.makeText(this, "Сначала заполните точки Start", Toast.LENGTH_SHORT).show()
+            } else {
+                pointsEnd = points.copyOf()
+                mutableBitmap = originalBitmap.copy(Bitmap.Config.ARGB_8888, true)
+                binding.imageViewAthens.setImageBitmap(mutableBitmap)
+            }
+        }
+
     }
 
     private fun touchPoint(event: MotionEvent) {
