@@ -41,4 +41,18 @@ class CubeView @JvmOverloads constructor(
             0xFFFF00FF.toInt(),
             0xFF00FFFF.toInt()
         )
+
+        var angelX = 0f
+        var angelY = 0f
+        var lastTouchX = 0f
+        var lastTouch = 0f
+
+        override fun onDraw(canvas: Canvas){
+            super.onDraw(canvas)
+            val width = width.toFloat()
+            val height = height.toFloat()
+            val size = Math.min(width,height) / 4
+
+            canvas.drawColor(Color.BLACK)
+        }
     }
