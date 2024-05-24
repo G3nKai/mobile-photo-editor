@@ -36,14 +36,17 @@
 
     <ImageView
         android:id="@+id/imageViewFilter"
-        android:layout_width="289dp"
-        android:layout_height="210dp"
-        android:src="@drawable/testimg"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_width="285dp"
+        android:layout_height="491dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/buttonsContainer"
-        android:layout_marginTop="16dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.388"
+        app:srcCompat="@drawable/testimg" />
 
     <HorizontalScrollView
         android:id="@+id/buttonsContainer"
